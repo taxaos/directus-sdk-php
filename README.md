@@ -1,2 +1,7 @@
-# directus-php-sdk
-Directus SDK for PHP
+<p align="center">
+<img src="https://s3.amazonaws.com/f.cl.ly/items/3Q2830043H1Y1c1F1K2D/directus-logo-stacked.png" alt="Directus Logo"/>
+</p>
+
+
+# Directus SDK for PHP
+For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
