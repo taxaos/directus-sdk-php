@@ -7,6 +7,8 @@ For PHP driven applications, use this SDK to more easily communicate with your D
 
 [![Build Status](https://travis-ci.org/directus/directus-sdk-php.svg?branch=master)](https://travis-ci.org/directus/directus-sdk-php)
 
+## Work In Process.
+
 ## Install
 
 Via Composer
