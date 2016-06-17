@@ -5,3 +5,32 @@
 
 # Directus SDK for PHP
 For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
+
+## Install
+
+Via Composer
+
+``` bash
+$ composer require directus/directus-sdk
+```
+
+## Usage
+
+``` php
+require 'vendor/autoload.php';
+
+$config = [
+    'driver' => 'pdo_mysql',
+    'host' => 'localhost',
+    'user' => 'root',
+    'pass' => 'root',
+    'name' => 'directus'
+];
+$database = new \Directus\Database($config);
+
+$articles = $database->fetchEntries('articles');
+
+foreach($articles as $article) {
+    echo '<h2>'.$article->title.'</h2>';
+}
+```
