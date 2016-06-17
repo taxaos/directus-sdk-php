@@ -29,9 +29,10 @@ $config = [
     'pass' => 'root',
     'name' => 'directus'
 ];
-$database = new \Directus\Database($config);
+$connection = new \Directus\SDK\Connection($config);
+$tableGateway = new \Directus\SDK\BaseTableGateway('articles', $connection);
 
-$articles = $database->fetchEntries('articles');
+$articles = $tableGateway->fetchEntries();
 
 foreach($articles as $article) {
     echo '<h2>'.$article->title.'</h2>';
