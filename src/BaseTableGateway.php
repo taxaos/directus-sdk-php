@@ -51,7 +51,7 @@ class BaseTableGateway extends TableGateway implements RequestsInterface
         $select = new Select($tableName);
 
         // Conditional to honor the active column, (does not check if column exists)
-        if (isset($conditions['active'])){
+        if (isset($conditions['active'])) {
             $select->where->equalTo('active', $conditions['active']);
         }
 

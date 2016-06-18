@@ -191,6 +191,6 @@ abstract class BaseClient
      */
     public function buildPath($pathFormat, $variables = [])
     {
-        return vsprintf(ltrim($pathFormat,'/'), $variables);
+        return vsprintf(ltrim($pathFormat, '/'), $variables);
     }
 }
