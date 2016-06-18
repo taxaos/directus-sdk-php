@@ -1,5 +1,5 @@
 {
-    "name": "directus-sdk-php",
+    "name": "directus/sdk",
     "description": "Directus SDK for PHP",
     "keywords": ["directus", "sdk"],
     "license": "MIT",
