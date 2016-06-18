@@ -28,6 +28,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $client->setAccessToken('newToken');
         $this->assertSame('newToken', $client->getAccessToken());
+
+        $this->assertEquals(1, $client->getAPIVersion());
+        $this->assertNull($client->getInstanceKey());
     }
 
     public function testOptions()
@@ -44,6 +47,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertSame('http://directus.local/2/', $client->getBaseEndpoint());
+
+        $this->assertEquals(2, $client->getAPIVersion());
     }
 
     public function testHostedClient()
@@ -60,6 +65,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertSame($expectedEndpoint, $client->getBaseEndpoint());
+        $this->assertEquals($instanceKey, $client->getInstanceKey());
     }
 
     public function testRequest()
