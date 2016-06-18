@@ -32,7 +32,7 @@ $config = [
 $connection = new \Directus\SDK\Connection($config);
 $tableGateway = new \Directus\SDK\BaseTableGateway('articles', $connection);
 
-$articles = $tableGateway->fetchEntries();
+$articles = $tableGateway->fetchItems();
 
 foreach($articles as $article) {
     echo '<h2>'.$article->title.'</h2>';
