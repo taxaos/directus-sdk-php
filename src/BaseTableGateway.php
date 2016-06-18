@@ -56,8 +56,8 @@ class BaseTableGateway extends TableGateway implements RequestsInterface
         }
 
         // Order by "id desc" by default or by a parameter value
-        if (isset($options['sort'])) {
-            $select->order($options['sort']);
+        if (isset($conditions['sort'])) {
+            $select->order($conditions['sort']);
         }
 
         return $this->selectWith($select);
