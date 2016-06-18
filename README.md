@@ -6,6 +6,7 @@
 For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
 
 [![Build Status](https://img.shields.io/travis/directus/directus-sdk-php.svg?style=flat-square)](https://travis-ci.org/directus/directus-sdk-php)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/directus/directus-sdk-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/directus/directus-sdk-php)
 
 ## Work In Process.
 
