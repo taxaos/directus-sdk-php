@@ -19,6 +19,7 @@ $ composer require directus/directus-sdk
 
 ## Usage
 
+### Database connection
 ``` php
 require 'vendor/autoload.php';
 
@@ -36,5 +37,44 @@ $articles = $tableGateway->fetchItems();
 
 foreach($articles as $article) {
     echo '<h2>'.$article->title.'</h2>';
+}
+```
+
+### Directus Hosted
+
+```php
+require 'vendor/autoload.php';
+
+$client = new \Directus\SDK\Client('user-token', [
+    // the sub-domain in your instance url
+    'instance_key' => 'user--instance'
+]);
+
+$results = $client->fetchItems('articles');
+
+$articles = $results->rows;
+
+foreach($articles as $article) {
+    echo "<h2>".$article->title."</h2>";
+}
+```
+
+### Your own server
+
+```php
+require 'vendor/autoload.php';
+
+$client = new \Directus\SDK\Client('user-token', [
+    // Directus API Path without its version
+    'base_url' => 'http://directus.local/api/',
+    'version' => 1 // Optional - default 1
+]);
+
+$results = $client->fetchItems('articles');
+
+$articles = $results->rows;
+
+foreach($articles as $article) {
+    echo "<h2>".$article->title."</h2>";
 }
 ```
