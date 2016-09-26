@@ -27,10 +27,10 @@ require 'vendor/autoload.php';
 
 $config = [
     'driver' => 'pdo_mysql',
-    'host' => 'localhost',
-    'user' => 'root',
-    'pass' => 'root',
-    'name' => 'directus'
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '123',
+    'database' => 'directus_db'
 ];
 $connection = new \Directus\SDK\Connection($config);
 $tableGateway = new \Directus\SDK\BaseTableGateway('articles', $connection);
