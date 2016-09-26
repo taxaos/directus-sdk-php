@@ -8,18 +8,21 @@ class Connection extends Adapter
 {
     /**
      * Name of the connection driver
+     *
      * @var string
      */
     protected $driverName;
 
     /**
      * Database configuration
+     *
      * @var array
      */
     protected $config = [];
 
     /**
      * Connection constructor.
+     *
      * @param array $config
      */
     public function __construct(array $config)
@@ -44,7 +47,9 @@ class Connection extends Adapter
 
     /**
      * Checks if a given driver name is an pdo driver.
+     *
      * @param $driverName
+     *
      * @return bool
      */
     protected function isAnPDODriver($driverName)
@@ -54,8 +59,10 @@ class Connection extends Adapter
 
     /**
      * Map all calls to the driver connection object.
+     *
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)

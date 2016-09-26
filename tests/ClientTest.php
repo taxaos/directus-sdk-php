@@ -6,6 +6,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      * @var \Directus\SDK\Client
      */
     protected $client;
+
     /**
      * @var \GuzzleHttp\Client
      */

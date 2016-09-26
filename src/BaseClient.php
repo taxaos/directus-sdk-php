@@ -8,42 +8,49 @@ abstract class BaseClient
 {
     /**
      * Directus Server base endpoint
+     *
      * @var string
      */
     protected $baseEndpoint;
 
     /**
      * API Version
+     *
      * @var string
      */
     protected $apiVersion;
 
     /**
      * Directus Hosted endpoint format.
+     *
      * @var string
      */
     protected $hostedBaseEndpointFormat;
 
     /**
      * Directus Hosted Instance Key
+     *
      * @var int|string
      */
     protected $instanceKey;
 
     /**
      * Authentication Token
+     *
      * @var string
      */
     protected $accessToken;
 
     /**
      * HTTP Client
+     *
      * @var \GuzzleHttp\Client
      */
     protected $httpClient;
 
     /**
      * HTTP Client request timeout
+     *
      * @var int
      */
     protected $timeout = 60;
@@ -89,6 +96,7 @@ abstract class BaseClient
 
     /**
      * Get the base endpoint url
+     *
      * @return string
      */
     public function getBaseEndpoint()
@@ -98,6 +106,7 @@ abstract class BaseClient
 
     /**
      * Get API Version
+     *
      * @return int|string
      */
     public function getAPIVersion()
@@ -107,6 +116,7 @@ abstract class BaseClient
 
     /**
      * Get the authentication access token
+     *
      * @return string
      */
     public function getAccessToken()
@@ -116,6 +126,7 @@ abstract class BaseClient
 
     /**
      * Set a new authentication access token
+     *
      * @param $newAccessToken
      */
     public function setAccessToken($newAccessToken)
@@ -125,6 +136,7 @@ abstract class BaseClient
 
     /**
      * Get the Directus hosted instance key
+     *
      * @return null|string
      */
     public function getInstanceKey()
@@ -134,6 +146,7 @@ abstract class BaseClient
 
     /**
      * Set the HTTP Client
+     *
      * @param HTTPClient $httpClient
      */
     public function setHTTPClient(HTTPClient $httpClient)
@@ -143,6 +156,7 @@ abstract class BaseClient
 
     /**
      * Get the HTTP Client
+     *
      * @return HTTPClient|null
      */
     public function getHTTPClient()
@@ -152,6 +166,7 @@ abstract class BaseClient
 
     /**
      * Get the default HTTP Client
+     *
      * @return HTTPClient
      */
     public function getDefaultHTTPClient()
@@ -169,9 +184,11 @@ abstract class BaseClient
 
     /**
      * Build a request object
+     *
      * @param $method
      * @param $pathFormat
      * @param $variables
+     *
      * @return \GuzzleHttp\Message\Request
      */
     public function buildRequest($method, $pathFormat, $variables = [])
@@ -185,8 +202,10 @@ abstract class BaseClient
 
     /**
      * Build a endpoint path based on a format
+     *
      * @param string $pathFormat
      * @param array $variables
+     *
      * @return string
      */
     public function buildPath($pathFormat, $variables = [])
