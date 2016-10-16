@@ -5,7 +5,10 @@
     "license": "MIT",
     "require": {
         "php": ">=5.4.0",
-        "directus/database": "dev-master",
+        "directus/database": "dev-d64",
+        "directus/acl": "dev-d64",
+        "directus/hook": "dev-d64",
+        "directus/utils": "dev-d64",
         "guzzlehttp/guzzle": "~5.3.0"
     },
     "require-dev": {
@@ -15,5 +18,19 @@
         "psr-4": {
             "Directus\\SDK\\": "src/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/directus/directus-acl"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/directus/directus-hook"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/directus/directus-php-utils"
+        }
+    ]
 }
