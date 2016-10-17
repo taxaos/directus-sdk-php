@@ -2,73 +2,132 @@
 
 namespace Directus\SDK;
 
-class Client extends BaseClient implements RequestsInterface
+use Directus\Database\Connection;
+use Directus\Util\ArrayUtils;
+use Directus\Database\TableSchema;
+
+class Client
 {
-    protected $baseEndpoint = 'http://localhost/api';
-    protected $hostedBaseEndpointFormat = 'https://%s.directus.io/api';
+    /**
+     * @var Client
+     */
+    protected static $instance = null;
 
-    public function fetchTables()
+    /**
+     * @var array
+     */
+    protected $defaultConfig = [
+        'environment' => 'development',
+        'database' => [
+            'driver' => 'pdo_mysql'
+        ],
+        'status' => [
+            'column_name' => 'active',
+            'deleted_value' => 0,
+            'active_value' => 1,
+            'draft_value' => 2,
+            'mapping' => [
+                0 => [
+                    'name' => 'Delete',
+                    'color' => '#C1272D',
+                    'sort' => 3
+                ],
+                1 => [
+                    'name' => 'Active',
+                    'color' => '#5B5B5B',
+                    'sort' => 1
+                ],
+                2 => [
+                    'name' => 'Draft',
+                    'color' => '#BBBBBB',
+                    'sort' => 2
+                ]
+            ]
+        ]
+    ];
+
+    /**
+     * @param $userToken
+     * @param array $options
+     *
+     * @return RequestsInterface
+     */
+    public static function create($userToken, $options = [])
     {
-        return $this->performRequest('GET', static::TABLE_LIST_ENDPOINT);
+        if (static::$instance == null) {
+            static::$instance = new static;
+        }
+
+        if (!is_array($userToken)) {
+            $newClient = static::$instance->createRemoteClient($userToken, $options);
+        } else {
+            $options = $userToken;
+            $newClient = static::$instance->createLocalClient($options);
+        }
+
+        return $newClient;
     }
 
-    public function fetchTableInfo($tableName)
+    /**
+     * Creates a new local client instance
+     *
+     * @param array $options
+     *
+     * @return ClientLocal
+     */
+    public function createLocalClient(array $options)
     {
-        return $this->performRequest('GET', static::TABLE_INFORMATION_ENDPOINT, $tableName);
+        $options = ArrayUtils::defaults($this->defaultConfig, $options);
+        $dbConfig = ArrayUtils::get($options, 'database', []);
+
+        $config = ArrayUtils::omit($options, 'database');
+        // match the actual directus status mapping config key
+        $config['statusMapping'] = ArrayUtils::get($config, 'status.mapping');
+        unset($config['status']['mapping']);
+
+        if (!defined('STATUS_DELETED_NUM')) {
+            define('STATUS_DELETED_NUM', ArrayUtils::get($config, 'status.deleted_value', 0));
+        }
+
+        if (!defined('STATUS_ACTIVE_NUM')) {
+            define('STATUS_ACTIVE_NUM', ArrayUtils::get($config, 'status.active_value', 1));
+        }
+
+        if (!defined('STATUS_DRAFT_NUM')) {
+            define('STATUS_DRAFT_NUM', ArrayUtils::get($config, 'status.draft_value', 2));
+        }
+
+        if (!defined('STATUS_COLUMN_NAME')) {
+            define('STATUS_COLUMN_NAME', ArrayUtils::get($config, 'status.column_name', 'active'));
+        }
+
+        if (!defined('DIRECTUS_ENV')) {
+            define('DIRECTUS_ENV', ArrayUtils::get($config, 'environment', 'development'));
+        }
+
+        $connection = new Connection($dbConfig);
+        $connection->connect();
+
+        $schema = new \Directus\Database\Schemas\Sources\MySQLSchema($connection);
+        $schema = new \Directus\Database\SchemaManager($schema);
+        TableSchema::setSchemaManagerInstance($schema);
+        TableSchema::setAclInstance(false);
+        TableSchema::setConnectionInstance($connection);
+        TableSchema::setConfig($config);
+
+        return new ClientLocal($connection);
     }
 
-    public function fetchColumns($tableName)
+    /**
+     * Create a new remote client instance
+     *
+     * @param $userToken
+     * @param array $options
+     *
+     * @return ClientRemote
+     */
+    public function createRemoteClient($userToken, array $options = [])
     {
-        return $this->performRequest('GET', static::COLUMN_LIST_ENDPOINT, $tableName);
-    }
-
-    public function fetchColumnInfo($tableName, $columnName)
-    {
-        return $this->performRequest('GET', static::COLUMN_INFORMATION_ENDPOINT, [$tableName, $columnName]);
-    }
-
-    public function fetchItems($tableName)
-    {
-        return $this->performRequest('GET', static::TABLE_ENTRIES_ENDPOINT, $tableName);
-    }
-
-    public function fetchItem($tableName, $itemID)
-    {
-        return $this->performRequest('GET', static::TABLE_ENTRY_ENDPOINT, [$tableName, $itemID]);
-    }
-
-    public function fetchGroups()
-    {
-        return $this->performRequest('GET', static::GROUP_LIST_ENDPOINT);
-    }
-
-    public function fetchGroupInfo($groupID)
-    {
-        return $this->performRequest('GET', static::GROUP_INFORMATION_ENDPOINT, $groupID);
-    }
-
-    public function fetchGroupPrivileges($groupID)
-    {
-        return $this->performRequest('GET', static::GROUP_PRIVILEGES_ENDPOINT, $groupID);
-    }
-
-    public function fetchFiles()
-    {
-        return $this->performRequest('GET', static::FILE_LIST_ENDPOINT);
-    }
-
-    public function fetchFileInfo($fileID)
-    {
-        return $this->performRequest('GET', static::FILE_INFORMATION_ENDPOINT, $fileID);
-    }
-
-    public function fetchSettings()
-    {
-        return $this->performRequest('GET', static::SETTING_LIST_ENDPOINT);
-    }
-
-    public function fetchSettingCollection($collectionName)
-    {
-        return $this->performRequest('GET', static::SETTING_COLLECTION_ENDPOINT, $collectionName);
+        return new ClientRemote($userToken, $options);
     }
 }

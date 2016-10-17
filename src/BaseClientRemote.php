@@ -4,7 +4,7 @@ namespace Directus\SDK;
 
 use GuzzleHttp\Client as HTTPClient;
 
-abstract class BaseClient
+abstract class BaseClientRemote
 {
     /**
      * Directus Server base endpoint

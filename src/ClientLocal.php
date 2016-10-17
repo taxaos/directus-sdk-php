@@ -2,11 +2,58 @@
 
 namespace Directus\SDK;
 
+use Directus\Database\Connection;
+use Directus\Database\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\RelationalTableGatewayWithConditions;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\TableGateway;
 
-class BaseTableGateway extends TableGateway implements RequestsInterface
+class ClientLocal implements RequestsInterface
 {
+    /**
+     * @var BaseTableGateway[]
+     */
+    protected $tableGateways = [];
+
+    /**
+     * @var Connection
+     */
+    protected $connection = null;
+
+    public function __construct($connection)
+    {
+        $this->connection = $connection;
+    }
+
+    /**
+     * Get a table gateway for the given table name
+     *
+     * @param $tableName
+     *
+     * @return RelationalTableGatewayWithConditions
+     */
+    protected function getTableGateway($tableName)
+    {
+        if (!array_key_exists($tableName, $this->tableGateways)) {
+            $this->tableGateways[$tableName] = new RelationalTableGatewayWithConditions($tableName, $this->connection);
+        }
+
+        return $this->tableGateways[$tableName];
+    }
+
+    public function getEntries($tableName, array $options = [])
+    {
+        $tableGateway = $this->getTableGateway($tableName);
+
+        return $tableGateway->getEntries($options);
+    }
+
+    public function getEntry($id, $tableName, array $options = [])
+    {
+        $tableGateway = $this->getTableGateway($tableName);
+
+        return $tableGateway->getEntries(array_merge(['id' => $id], $options));
+    }
+
     /**
      * @inheritDoc
      */

@@ -42,21 +42,23 @@ interface RequestsInterface
     /**
      * Fetch Items from a given table
      *
-     * @param $tableName
+     * @param string $tableName
+     * @param array $options
      *
      * @return object
      */
-    public function fetchItems($tableName);
+    public function getEntries($tableName, array $options = []);
 
     /**
-     * Fetch an Item in a given table by ID
+     * Get an entry in a given table by the given ID
      *
-     * @param $tableName
-     * @param $itemID
+     * @param mixed $id
+     * @param string $tableName
+     * @param array $options
      *
      * @return array
      */
-    public function fetchItem($tableName, $itemID);
+    public function getEntry($id, $tableName, array $options = []);
 
     /**
      * Fetch List of User groups
