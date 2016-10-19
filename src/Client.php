@@ -82,7 +82,7 @@ class Client
 
         $config = ArrayUtils::omit($options, 'database');
         // match the actual directus status mapping config key
-        $config['statusMapping'] = ArrayUtils::get($config, 'status.mapping');
+        $config['statusMapping'] = $config['status']['mapping'];
         unset($config['status']['mapping']);
 
         if (!defined('STATUS_DELETED_NUM')) {

@@ -17,7 +17,8 @@
     "autoload": {
         "psr-4": {
             "Directus\\SDK\\": "src/"
-        }
+        },
+        "files": ["src/helpers.php"]
     },
     "repositories": [
         {

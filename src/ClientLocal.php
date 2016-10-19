@@ -3,8 +3,10 @@
 namespace Directus\SDK;
 
 use Directus\Database\Connection;
+use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\RelationalTableGatewayWithConditions;
+use Directus\Database\TableSchema;
 use Zend\Db\Sql\Select;
 
 class ClientLocal implements RequestsInterface
@@ -25,33 +27,49 @@ class ClientLocal implements RequestsInterface
     }
 
     /**
-     * Get a table gateway for the given table name
+     * Gets the list of tables name in the database
      *
-     * @param $tableName
+     * @param array $params
      *
-     * @return RelationalTableGatewayWithConditions
+     * @return array
      */
-    protected function getTableGateway($tableName)
+    public function getTables(array $params = [])
     {
-        if (!array_key_exists($tableName, $this->tableGateways)) {
-            $this->tableGateways[$tableName] = new RelationalTableGatewayWithConditions($tableName, $this->connection);
-        }
-
-        return $this->tableGateways[$tableName];
+        return TableSchema::getTablesSchema($params);
     }
 
-    public function getEntries($tableName, array $options = [])
+    public function getColumns(array $params = [])
+    {
+        return TableSchema::getColumnsSchema($params);
+    }
+
+    public function getEntries($tableName, array $params = [])
     {
         $tableGateway = $this->getTableGateway($tableName);
 
-        return $tableGateway->getEntries($options);
+        return $tableGateway->getEntries($params);
     }
 
-    public function getEntry($id, $tableName, array $options = [])
+    public function getEntry($tableName, $id, array $params = [])
     {
         $tableGateway = $this->getTableGateway($tableName);
 
-        return $tableGateway->getEntries(array_merge(['id' => $id], $options));
+        // @TODO: Dynamic ID
+        return $tableGateway->getEntries(array_merge($params, ['id' => $id]));
+    }
+
+    public function getUsers(array $params = [])
+    {
+        $tableGateway = $this->getTableGateway('directus_users');
+
+        return $tableGateway->getEntries($params);
+    }
+
+    public function getUser($id, array $params = [])
+    {
+        $tableGateway = $this->getTableGateway('directus_users');
+
+        return $tableGateway->getEntries(array_merge($params, ['id' => $id]));
     }
 
     /**
@@ -174,4 +192,19 @@ class ClientLocal implements RequestsInterface
         // TODO: Implement fetchSettingCollection() method.
     }
 
+    /**
+     * Get a table gateway for the given table name
+     *
+     * @param $tableName
+     *
+     * @return RelationalTableGatewayWithConditions
+     */
+    protected function getTableGateway($tableName)
+    {
+        if (!array_key_exists($tableName, $this->tableGateways)) {
+            $this->tableGateways[$tableName] = new RelationalTableGatewayWithConditions($tableName, $this->connection);
+        }
+
+        return $this->tableGateways[$tableName];
+    }
 }

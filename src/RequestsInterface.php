@@ -5,11 +5,22 @@ namespace Directus\SDK;
 interface RequestsInterface
 {
     /**
-     * Fetch list of tables
+     * Gets list of all tables
+     *
+     * @param array $params
      *
      * @return array
      */
-    public function fetchTables();
+    public function getTables(array $params = []);
+
+    /**
+     * Gets list of the all columns
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getColumns(array $params = []);
 
     /**
      * Fetch Information of a given table
@@ -58,7 +69,26 @@ interface RequestsInterface
      *
      * @return array
      */
-    public function getEntry($id, $tableName, array $options = []);
+    public function getEntry($tableName, $id, array $options = []);
+
+    /**
+     * Gets the list of users
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getUsers(array $params = []);
+
+    /**
+     * Gets a user by the given id
+     *
+     * @param $id
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getUser($id, array $params = []);
 
     /**
      * Fetch List of User groups
