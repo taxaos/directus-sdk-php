@@ -73,6 +73,15 @@ class Entry implements ResponseInterface, \ArrayAccess
         unset($this->data[$offset]);
     }
 
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        }
+
+        throw new \InvalidArgumentException('Invalid property: ' . $name);
+    }
+
     /**
      * Gets the object representation of this entry
      *
