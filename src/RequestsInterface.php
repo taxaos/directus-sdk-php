@@ -1,7 +1,20 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\SDK;
 
+/**
+ * Requests Interface
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 interface RequestsInterface
 {
     /**
@@ -23,6 +36,16 @@ interface RequestsInterface
     public function getColumns(array $params = []);
 
     /**
+     * Fetch columns of a given table
+     *
+     * @param $tableName
+     * @param $params
+     *
+     * @return array
+     */
+    public function getTableColumns($tableName, array $params = []);
+
+    /**
      * Fetch Information of a given table
      *
      * @param $tableName
@@ -30,15 +53,6 @@ interface RequestsInterface
      * @return object
      */
     public function fetchTableInfo($tableName);
-
-    /**
-     * Fetch columns of a given table
-     *
-     * @param $tableName
-     *
-     * @return array
-     */
-    public function fetchColumns($tableName);
 
     /**
      * Fetch details of a given table's column

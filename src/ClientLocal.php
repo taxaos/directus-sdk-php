@@ -1,14 +1,30 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\SDK;
 
 use Directus\Database\Connection;
-use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\RelationalTableGatewayWithConditions;
 use Directus\Database\TableSchema;
+use Directus\SDK\Response\EntryCollection;
+use Directus\SDK\Response\Entry;
 use Zend\Db\Sql\Select;
 
+/**
+ * Client Local
+ *
+ * Client to Interact with the database directly using Directus Database Component
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class ClientLocal implements RequestsInterface
 {
     /**
@@ -21,6 +37,11 @@ class ClientLocal implements RequestsInterface
      */
     protected $connection = null;
 
+    /**
+     * ClientLocal constructor.
+     *
+     * @param $connection
+     */
     public function __construct($connection)
     {
         $this->connection = $connection;
@@ -38,18 +59,57 @@ class ClientLocal implements RequestsInterface
         return TableSchema::getTablesSchema($params);
     }
 
+    /**
+     * Gets all the columns in the database
+     *
+     * @param array $params
+     *
+     * @return array
+     */
     public function getColumns(array $params = [])
     {
         return TableSchema::getColumnsSchema($params);
     }
 
+    /**
+     * Gets table columns
+     *
+     * @param $tableName
+     * @param array $params
+     *
+     * @return \Directus\Database\Object\Column[]
+     */
+    public function getTableColumns($tableName, array $params = [])
+    {
+        $tables = TableSchema::getTableColumnsSchema($tableName, $params);
+
+        return $tables;
+    }
+
+    /**
+     * Gets all the entries in the given table name
+     *
+     * @param string $tableName
+     * @param array $params
+     *
+     * @return Entry|EntryCollection
+     */
     public function getEntries($tableName, array $params = [])
     {
         $tableGateway = $this->getTableGateway($tableName);
 
-        return $tableGateway->getEntries($params);
+        return $this->createResponseFromData($tableGateway->getEntries($params));
     }
 
+    /**
+     * Gets an entry in the given table name with the given id
+     *
+     * @param string $tableName
+     * @param mixed $id
+     * @param array $params
+     *
+     * @return array|mixed
+     */
     public function getEntry($tableName, $id, array $params = [])
     {
         $tableGateway = $this->getTableGateway($tableName);
@@ -58,6 +118,13 @@ class ClientLocal implements RequestsInterface
         return $tableGateway->getEntries(array_merge($params, ['id' => $id]));
     }
 
+    /**
+     * Gets the list of users
+     *
+     * @param array $params
+     *
+     * @return array|mixed
+     */
     public function getUsers(array $params = [])
     {
         $tableGateway = $this->getTableGateway('directus_users');
@@ -65,11 +132,17 @@ class ClientLocal implements RequestsInterface
         return $tableGateway->getEntries($params);
     }
 
+    /**
+     * Gets an user by the given id
+     *
+     * @param $id
+     * @param array $params
+     *
+     * @return array|mixed
+     */
     public function getUser($id, array $params = [])
     {
-        $tableGateway = $this->getTableGateway('directus_users');
-
-        return $tableGateway->getEntries(array_merge($params, ['id' => $id]));
+        return $this->getEntry('directus_users', $id, $params);
     }
 
     /**
@@ -206,5 +279,17 @@ class ClientLocal implements RequestsInterface
         }
 
         return $this->tableGateways[$tableName];
+    }
+
+    // @TODO: move to a builder class
+    protected function createResponseFromData($data)
+    {
+        if (isset($data['rows'])) {
+            $response = new EntryCollection($data);
+        } else {
+            $response = new Entry($data);
+        }
+
+        return $response;
     }
 }

@@ -1,13 +1,26 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\SDK;
 
+/**
+ * Client Remote
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class ClientRemote extends BaseClientRemote implements RequestsInterface
 {
     protected $baseEndpoint = 'http://localhost/api';
     protected $hostedBaseEndpointFormat = 'https://%s.directus.io/api';
 
-    public function fetchTables()
+    public function getTables(array $params = [])
     {
         return $this->performRequest('GET', static::TABLE_LIST_ENDPOINT);
     }
@@ -17,7 +30,12 @@ class ClientRemote extends BaseClientRemote implements RequestsInterface
         return $this->performRequest('GET', static::TABLE_INFORMATION_ENDPOINT, $tableName);
     }
 
-    public function fetchColumns($tableName)
+    public function getColumns(array $params = [])
+    {
+        throw new \Exception('Endpoint not defined yet');
+    }
+
+    public function getTableColumns($tableName, array $params = [])
     {
         return $this->performRequest('GET', static::COLUMN_LIST_ENDPOINT, $tableName);
     }
@@ -35,6 +53,16 @@ class ClientRemote extends BaseClientRemote implements RequestsInterface
     public function getEntry($id, $tableName, array $options = [])
     {
         return $this->performRequest('GET', static::TABLE_ENTRY_ENDPOINT, [$tableName, $id]);
+    }
+
+    public function getUsers(array $params = [])
+    {
+        return $this->getEntries('directus_users', $params);
+    }
+
+    public function getUser($id, array $params = [])
+    {
+        return $this->getEntry($id, 'directus_users', $params);
     }
 
     public function fetchGroups()
