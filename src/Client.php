@@ -63,7 +63,7 @@ class Client
      * @param $userToken
      * @param array $options
      *
-     * @return RequestsInterface
+     * @return ClientLocal|ClientRemote
      */
     public static function create($userToken, $options = [])
     {

@@ -3,7 +3,7 @@
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Directus\SDK\Client
+     * @var \Directus\SDK\ClientRemote
      */
     protected $client;
 
@@ -16,7 +16,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->client = new \Directus\SDK\Client('token');
+        $this->client = \Directus\SDK\Client::create('token');
         $this->httpClient = $this->client->getHTTPClient();
     }
 
@@ -36,13 +36,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testOptions()
     {
-        $client = new \Directus\SDK\Client('token', [
+        $client = \Directus\SDK\Client::create('token', [
             'base_url' => 'http://directus.local'
         ]);
 
         $this->assertSame('http://directus.local/1/', $client->getBaseEndpoint());
 
-        $client = new \Directus\SDK\Client('token', [
+        $client = \Directus\SDK\Client::create('token', [
             'base_url' => 'http://directus.local',
             'version' => 2
         ]);
@@ -55,12 +55,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testHostedClient()
     {
         $instanceKey = 'account--instance';
-        $client = new \Directus\SDK\Client('token', ['instance_key' => $instanceKey]);
+        $client = \Directus\SDK\Client::create('token', ['instance_key' => $instanceKey]);
 
         $expectedEndpoint = 'https://'.$instanceKey.'.directus.io/api/1/';
         $this->assertSame($expectedEndpoint, $client->getBaseEndpoint());
 
-        $client = new \Directus\SDK\Client('token', [
+        $client = \Directus\SDK\Client::create('token', [
             'base_url' => 'http://directus.local',
             'instance_key' => $instanceKey
         ]);
@@ -129,11 +129,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testFetchTables()
     {
         $this->mockResponse('fetchTables.txt');
-        $response = $this->client->fetchTables();
+        $response = $this->client->getTables();
         $this->assertInternalType('array', $response);
 
         $this->mockResponse('fetchTablesEmpty.txt');
-        $response = $this->client->fetchTables();
+        $response = $this->client->getTables();
         $this->assertInternalType('array', $response);
     }
 
@@ -162,7 +162,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testFetchItems()
     {
         $this->mockResponse('fetchItems.txt');
-        $response = $this->client->fetchItems('articles');
+        $response = $this->client->getEntries('articles');
 
         $this->assertObjectHasAttribute('Active', $response);
         $this->assertObjectHasAttribute('Draft', $response);
@@ -171,7 +171,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $response->rows);
 
         $this->mockResponse('fetchItemsEmpty.txt');
-        $response = $this->client->fetchItems('articles');
+        $response = $this->client->getEntries('articles');
 
         $this->assertObjectHasAttribute('Active', $response);
         $this->assertObjectHasAttribute('Draft', $response);
@@ -183,22 +183,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testFetchItem()
     {
         $this->mockResponse('fetchItem.txt');
-        $response = $this->client->fetchItem('articles', 1);
+        $response = $this->client->getEntry('articles', 1);
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchItemEmpty.txt');
-        $response = $this->client->fetchItem('articles', 3);
+        $response = $this->client->getEntry('articles', 3);
         $this->assertNull($response);
     }
 
     public function testFetchColumns()
     {
         $this->mockResponse('fetchColumns.txt');
-        $response = $this->client->fetchColumns('articles');
+        $response = $this->client->getTableColumns('articles');
         $this->assertInternalType('array', $response);
 
         $this->mockResponse('fetchColumnsEmpty.txt');
-        $response = $this->client->fetchColumns('articles');
+        $response = $this->client->getTableColumns('articles');
         $this->assertInternalType('array', $response);
     }
 
