@@ -38,6 +38,8 @@ class Entry implements ResponseInterface, \ArrayAccess
     }
 
     /**
+     * Get the entry data
+     *
      * @return array
      */
     public function getData()
@@ -46,6 +48,8 @@ class Entry implements ResponseInterface, \ArrayAccess
     }
 
     /**
+     * Get the entry metadata
+     *
      * @return array
      */
     public function getMetaData()
