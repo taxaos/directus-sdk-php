@@ -26,7 +26,6 @@ $ composer require directus/directus-sdk
 require 'vendor/autoload.php';
 
 $config = [
-    'driver' => 'pdo_mysql',
     'hostname' => 'localhost',
     'username' => 'root',
     'password' => '123',
@@ -34,8 +33,8 @@ $config = [
 ];
 $connection = new \Directus\SDK\Connection($config);
 $tableGateway = new \Directus\SDK\BaseTableGateway('articles', $connection);
-
-$articles = $tableGateway->fetchItems();
+$client = \Directus\SDK\Client::create($config);
+$articles = $tableGateway->getEntries();
 
 foreach($articles as $article) {
     echo '<h2>'.$article->title.'</h2>';
@@ -47,15 +46,12 @@ foreach($articles as $article) {
 ```php
 require 'vendor/autoload.php';
 
-$client = new \Directus\SDK\Client('user-token', [
+$client = new \Directus\SDK\Client::create('user-token', [
     // the sub-domain in your instance url
     'instance_key' => 'user--instance'
 ]);
 
-$results = $client->fetchItems('articles');
-
-$articles = $results->rows;
-
+$articles = $client->getEntries('articles');
 foreach($articles as $article) {
     echo "<h2>".$article->title."</h2>";
 }
@@ -66,16 +62,13 @@ foreach($articles as $article) {
 ```php
 require 'vendor/autoload.php';
 
-$client = new \Directus\SDK\Client('user-token', [
+$client = new \Directus\SDK\Client::create('user-token', [
     // Directus API Path without its version
     'base_url' => 'http://directus.local/api/',
     'version' => 1 // Optional - default 1
 ]);
 
-$results = $client->fetchItems('articles');
-
-$articles = $results->rows;
-
+$articles = $client->fetchItems('articles');
 foreach($articles as $article) {
     echo "<h2>".$article->title."</h2>";
 }
