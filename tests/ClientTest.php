@@ -162,7 +162,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testFetchItems()
     {
         $this->mockResponse('fetchItems.txt');
-        $response = $this->client->getEntries('articles');
+        $response = $this->client->getUsers();
 
         $this->assertObjectHasAttribute('Active', $response);
         $this->assertObjectHasAttribute('Draft', $response);
@@ -171,7 +171,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $response->rows);
 
         $this->mockResponse('fetchItemsEmpty.txt');
-        $response = $this->client->getEntries('articles');
+        $response = $this->client->getUsers();
 
         $this->assertObjectHasAttribute('Active', $response);
         $this->assertObjectHasAttribute('Draft', $response);
@@ -183,11 +183,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testFetchItem()
     {
         $this->mockResponse('fetchItem.txt');
-        $response = $this->client->getEntry('articles', 1);
+        $response = $this->client->getUser(3);
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchItemEmpty.txt');
-        $response = $this->client->getEntry('articles', 3);
+        $response = $this->client->getUser(3);
         $this->assertNull($response);
     }
 
@@ -293,6 +293,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockResponse('fetchSettingsCollection.txt');
         $response = $this->client->fetchSettingCollection('global');
         $this->assertInternalType('object', $response);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetColumns()
+    {
+        $this->client->getColumns();
     }
 
     protected function mockResponse($path)

@@ -69,12 +69,12 @@ class Entry implements ResponseInterface, \ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        return $this->data[$offset] = $value;
+        throw new \BadMethodCallException('Entry is read only');
     }
 
     public function offsetUnset($offset)
     {
-        unset($this->data[$offset]);
+        throw new \BadMethodCallException('Entry is read only');
     }
 
     public function __get($name)
@@ -86,6 +86,11 @@ class Entry implements ResponseInterface, \ArrayAccess
         throw new \InvalidArgumentException('Invalid property: ' . $name);
     }
 
+    public function __set($name, $value)
+    {
+        throw new \BadMethodCallException('Entry is read only');
+    }
+
     /**
      * Gets the object representation of this entry
      *
@@ -95,7 +100,7 @@ class Entry implements ResponseInterface, \ArrayAccess
     {
         return (object) [
             'metadata' => $this->getMetaData(),
-            'fields' => $this->getData()
+            'data' => $this->getData()
         ];
     }
 }
