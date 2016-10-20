@@ -16,7 +16,87 @@ For PHP driven applications, use this SDK to more easily communicate with your D
 Via Composer
 
 ``` bash
-$ composer require directus/directus-sdk
+$ composer init
+```
+
+Follow Composer instructions or create a empty `composer.json` file as shown below:
+
+```json
+{
+  "name": "directus/web-app-example",
+  "description": "Directus web app example"
+}
+```
+
+Add the requires packages:
+
+```json
+  "require": {
+    "php": ">=5.4.0",
+    "directus/sdk": "dev-d64"
+  }
+```
+The directus SDK package is not available through Packagist it has to be added manually where the repository is located.
+
+```json
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-sdk-php"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-acl"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-hook"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-php-utils"
+    }
+  ]
+```
+
+The result should be like this:
+
+```json
+
+{
+  "name": "directus/web-app-example",
+  "description": "Directus web app example",
+  "require": {
+    "php": ">=5.4.0",
+    "directus/sdk": "dev-d64"
+  },
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-sdk-php"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-acl"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-hook"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/directus/directus-php-utils"
+    }
+  ]
+}
+
+```
+Now the composer.json is ready, it's time to install the dependencies.
+
+```bash
+composer install
 ```
 
 ## Usage
@@ -26,13 +106,14 @@ $ composer require directus/directus-sdk
 require 'vendor/autoload.php';
 
 $config = [
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => '123',
-    'database' => 'directus_db'
+    'database' => [
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '123',
+        'database' => 'directus_db',
+    ]
 ];
-$connection = new \Directus\SDK\Connection($config);
-$tableGateway = new \Directus\SDK\BaseTableGateway('articles', $connection);
+
 $client = \Directus\SDK\Client::create($config);
 $articles = $tableGateway->getEntries();
 
@@ -68,7 +149,7 @@ $client = new \Directus\SDK\Client::create('user-token', [
     'version' => 1 // Optional - default 1
 ]);
 
-$articles = $client->fetchItems('articles');
+$articles = $client->getEntries('articles');
 foreach($articles as $article) {
     echo "<h2>".$article->title."</h2>";
 }
