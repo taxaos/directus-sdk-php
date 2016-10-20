@@ -115,7 +115,7 @@ $config = [
 ];
 
 $client = \Directus\SDK\Client::create($config);
-$articles = $tableGateway->getEntries();
+$articles = $client->getEntries('articles');
 
 foreach($articles as $article) {
     echo '<h2>'.$article->title.'</h2>';
