@@ -112,10 +112,8 @@ class ClientLocal implements RequestsInterface
      */
     public function getEntry($tableName, $id, array $params = [])
     {
-        $tableGateway = $this->getTableGateway($tableName);
-
         // @TODO: Dynamic ID
-        return $tableGateway->getEntries(array_merge($params, ['id' => $id]));
+        return $this->getEntries($tableName, array_merge($params, ['id' => $id]));
     }
 
     /**
