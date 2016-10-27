@@ -114,9 +114,7 @@ class ClientLocal implements RequestsInterface
     {
         // @TODO: Dynamic ID
         return $this->getEntries($tableName, array_merge($params, [
-            'filter' => [
-                'id' => ['eq' => $id]
-            ]
+            'id' => $id
         ]));
     }
 
