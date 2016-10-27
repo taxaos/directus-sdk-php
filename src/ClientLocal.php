@@ -12,7 +12,7 @@ namespace Directus\SDK;
 
 use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
-use Directus\Database\TableGateway\RelationalTableGatewayWithConditions;
+use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\SDK\Response\EntryCollection;
 use Directus\SDK\Response\Entry;
@@ -268,12 +268,12 @@ class ClientLocal implements RequestsInterface
      *
      * @param $tableName
      *
-     * @return RelationalTableGatewayWithConditions
+     * @return RelationalTableGateway
      */
     protected function getTableGateway($tableName)
     {
         if (!array_key_exists($tableName, $this->tableGateways)) {
-            $this->tableGateways[$tableName] = new RelationalTableGatewayWithConditions($tableName, $this->connection);
+            $this->tableGateways[$tableName] = new RelationalTableGateway($tableName, $this->connection);
         }
 
         return $this->tableGateways[$tableName];
