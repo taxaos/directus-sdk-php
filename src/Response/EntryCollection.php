@@ -27,7 +27,7 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate , \Counta
     /**
      * @var array
      */
-    protected $data = [];
+    protected $rawData = [];
 
     /**
      * @var array
@@ -41,7 +41,7 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate , \Counta
      */
     public function __construct($data)
     {
-        $this->data = $data;
+        $this->rawData = $data;
         $this->metadata = ArrayUtils::omit($data, 'rows');
 
         $rows = isset($data['rows']) ? $data['rows'] : [];
@@ -60,7 +60,7 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate , \Counta
      */
     public function getRawData()
     {
-        return $this->data;
+        return $this->rawData;
     }
 
     /**

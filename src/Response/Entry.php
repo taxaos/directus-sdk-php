@@ -25,6 +25,11 @@ class Entry implements ResponseInterface, \ArrayAccess
     /**
      * @var array
      */
+    protected $rawData = null;
+
+    /**
+     * @var array
+     */
     protected $metadata = null;
 
     /**
@@ -34,7 +39,16 @@ class Entry implements ResponseInterface, \ArrayAccess
      */
     public function __construct($data)
     {
-        $this->data = $data;
+        $this->rawData = $data;
+        foreach($data as $field => $value) {
+            if (isset($value['rows'])) {
+                $this->data[$field] = new EntryCollection($value);
+            } else if (is_array($value)) {
+                $this->data[$field] = new static($value);
+            } else {
+                $this->data[$field] = $value;
+            }
+        }
     }
 
     /**
@@ -55,6 +69,14 @@ class Entry implements ResponseInterface, \ArrayAccess
     public function getMetaData()
     {
         return $this->metadata;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRawData()
+    {
+        return $this->rawData;
     }
 
     public function offsetExists($offset)
