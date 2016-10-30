@@ -17,7 +17,7 @@ use Directus\Util\ArrayUtils;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class EntryCollection implements ResponseInterface, \IteratorAggregate , \Countable
+class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
      * @var array
@@ -91,6 +91,26 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate , \Counta
     public function getIterator()
     {
         return new \ArrayIterator($this->items);
+    }
+
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->items);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->items[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        throw new \BadMethodCallException('EntryCollection is read only');
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new \BadMethodCallException('EntryCollection is read only');
     }
 
     /**
