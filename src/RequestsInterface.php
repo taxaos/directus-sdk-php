@@ -130,20 +130,20 @@ interface RequestsInterface
     public function fetchGroupPrivileges($groupID);
 
     /**
-     * Fetch list of files
+     * Gets a list fo files
      *
      * @return object
      */
-    public function fetchFiles();
+    public function getFiles();
 
     /**
-     * Fetch the information of a given file
+     * Gets the information of a given file ID
      *
      * @param $fileID
      *
      * @return mixed
      */
-    public function fetchFileInfo($fileID);
+    public function getFile($fileID);
 
     /**
      * Fetch all settings

@@ -127,6 +127,7 @@ class ClientLocal implements RequestsInterface
      */
     public function getUsers(array $params = [])
     {
+        // @TODO: store the directus tables somewhere (SchemaManager?)
         return $this->getEntries('directus_users', $params);
     }
 
@@ -234,17 +235,17 @@ class ClientLocal implements RequestsInterface
     /**
      * @inheritDoc
      */
-    public function fetchFiles()
+    public function getFiles(array $params = [])
     {
-        // TODO: Implement fetchFiles() method.
+        return $this->getEntries('directus_files', $params);
     }
 
     /**
      * @inheritDoc
      */
-    public function fetchFileInfo($fileID)
+    public function getFile($id, array $params = [])
     {
-        // TODO: Implement fetchFileInfo() method.
+        return $this->getEntry('directus_files', $id, $params);
     }
 
     /**
