@@ -127,9 +127,7 @@ class ClientLocal implements RequestsInterface
      */
     public function getUsers(array $params = [])
     {
-        $tableGateway = $this->getTableGateway('directus_users');
-
-        return $tableGateway->getEntries($params);
+        return $this->getEntries('directus_users', $params);
     }
 
     /**
