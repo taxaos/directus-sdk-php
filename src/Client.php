@@ -10,6 +10,7 @@
 
 namespace Directus\SDK;
 
+use Directus\Acl\Acl;
 use Directus\Database\Connection;
 use Directus\Util\ArrayUtils;
 use Directus\Database\TableSchema;
@@ -121,10 +122,30 @@ class Client
         $connection = new Connection($dbConfig);
         $connection->connect();
 
+        $acl = new Acl();
+        $acl->setUserId(1);
+        $acl->setGroupId(1);
+        $acl->setGroupPrivileges([
+            '*' => [
+                'id' => 1,
+                'table_name' => '*',
+                'group_id' => 1,
+                'read_field_blacklist' => [],
+                'write_field_blacklist' => [],
+                'nav_listed' => 1,
+                'status_id' => 0,
+                'allow_view' => 2,
+                'allow_add' => 1,
+                'allow_edit' => 2,
+                'allow_delete' => 2,
+                'allow_alter' => 1
+            ]
+        ]);
+
         $schema = new \Directus\Database\Schemas\Sources\MySQLSchema($connection);
         $schema = new \Directus\Database\SchemaManager($schema);
         TableSchema::setSchemaManagerInstance($schema);
-        TableSchema::setAclInstance(false);
+        TableSchema::setAclInstance($acl);
         TableSchema::setConnectionInstance($connection);
         TableSchema::setConfig($config);
 
