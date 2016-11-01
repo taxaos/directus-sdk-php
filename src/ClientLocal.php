@@ -12,6 +12,7 @@ namespace Directus\SDK;
 
 use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\SDK\Response\EntryCollection;
@@ -262,6 +263,17 @@ class ClientLocal implements RequestsInterface
     public function fetchSettingCollection($collectionName)
     {
         // TODO: Implement fetchSettingCollection() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMessages($userId)
+    {
+        $messagesTableGateway = new DirectusMessagesTableGateway($this->connection, null);
+        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($userId);
+
+        return $this->createResponseFromData($result);
     }
 
     /**

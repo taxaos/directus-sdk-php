@@ -9,6 +9,7 @@
  */
 
 namespace Directus\SDK;
+use Directus\SDK\Response\EntryCollection;
 
 /**
  * Requests Interface
@@ -160,4 +161,13 @@ interface RequestsInterface
      * @return object
      */
     public function fetchSettingCollection($collectionName);
+
+    /**
+     * Gets all messages from the given user ID
+     *
+     * @param $userId
+     *
+     * @return EntryCollection
+     */
+    public function getMessages($userId);
 }
