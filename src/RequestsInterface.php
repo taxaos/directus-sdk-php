@@ -9,6 +9,7 @@
  */
 
 namespace Directus\SDK;
+use Directus\SDK\Response\Entry;
 use Directus\SDK\Response\EntryCollection;
 
 /**
@@ -171,5 +172,22 @@ interface RequestsInterface
      */
     public function getMessages($userId);
 
+    /**
+     * Create a new entry in the given table name
+     *
+     * @param $tableName
+     * @param array $data
+     *
+     * @return Entry
+     */
     public function createEntry($tableName, array $data);
+
+    /**
+     *
+     * @param $tableName
+     * @param string|array|Entry|EntryCollection $ids
+     *
+     * @return int
+     */
+    public function deleteEntry($tableName, $ids);
 }

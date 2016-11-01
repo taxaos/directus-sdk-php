@@ -276,12 +276,32 @@ class ClientLocal implements RequestsInterface
         return $this->createResponseFromData($result);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function createEntry($tableName, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
         $newRecord = $tableGateway->manageRecordUpdate($tableName, $data);
 
         return $this->createResponseFromData($newRecord->toArray());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteEntry($tableName, $ids)
+    {
+        // @TODO: Accept EntryCollection and Entry
+        $tableGateway = $this->getTableGateway($tableName);
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        return $tableGateway->delete(function($delete) use ($ids) {
+            return $delete->where->in('id', $ids);
+        });
     }
 
     /**
