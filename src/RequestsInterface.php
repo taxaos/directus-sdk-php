@@ -170,4 +170,6 @@ interface RequestsInterface
      * @return EntryCollection
      */
     public function getMessages($userId);
+
+    public function createEntry($tableName, array $data);
 }

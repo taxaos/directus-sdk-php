@@ -276,6 +276,14 @@ class ClientLocal implements RequestsInterface
         return $this->createResponseFromData($result);
     }
 
+    public function createEntry($tableName, array $data)
+    {
+        $tableGateway = $this->getTableGateway($tableName);
+        $newRecord = $tableGateway->manageRecordUpdate($tableName, $data);
+
+        return $this->createResponseFromData($newRecord->toArray());
+    }
+
     /**
      * Get a table gateway for the given table name
      *
@@ -286,7 +294,8 @@ class ClientLocal implements RequestsInterface
     protected function getTableGateway($tableName)
     {
         if (!array_key_exists($tableName, $this->tableGateways)) {
-            $this->tableGateways[$tableName] = new RelationalTableGateway($tableName, $this->connection);
+            $acl = TableSchema::getAclInstance();
+            $this->tableGateways[$tableName] = new RelationalTableGateway($tableName, $this->connection, $acl);
         }
 
         return $this->tableGateways[$tableName];
