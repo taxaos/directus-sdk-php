@@ -290,6 +290,17 @@ class ClientLocal implements RequestsInterface
     /**
      * @inheritDoc
      */
+    public function updateEntry($tableName, $id, array $data)
+    {
+        $tableGateway = $this->getTableGateway($tableName);
+        $record = $tableGateway->manageRecordUpdate($tableName, array_merge($data, ['id' => $id]));
+
+        return $this->createResponseFromData($record->toArray());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function deleteEntry($tableName, $ids)
     {
         // @TODO: Accept EntryCollection and Entry

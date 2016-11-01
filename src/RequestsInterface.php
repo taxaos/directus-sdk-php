@@ -183,6 +183,17 @@ interface RequestsInterface
     public function createEntry($tableName, array $data);
 
     /**
+     * Update the entry of the given table and id
+     *
+     * @param $tableName
+     * @param $id
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function updateEntry($tableName, $id, array $data);
+
+    /**
      *
      * @param $tableName
      * @param string|array|Entry|EntryCollection $ids
