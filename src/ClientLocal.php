@@ -68,7 +68,7 @@ class ClientLocal implements RequestsInterface
      */
     public function getColumns($tableName, array $params = [])
     {
-        return $this->createResponseFromData(TableSchema::getTableColumnsSchema($tableName, $params));
+        return $this->createResponseFromData(TableSchema::getColumnSchemaArray($tableName, $params));
     }
 
     /**
