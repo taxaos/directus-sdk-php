@@ -232,6 +232,55 @@ class ClientLocal implements RequestsInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function createUser(array $data)
+    {
+        return $this->createEntry('directus_users', $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateUser($id, array $data)
+    {
+        return $this->updateEntry('directus_users', $id, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteUser($ids)
+    {
+        return $this->deleteEntry('directus_users', $ids);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createFile(array $data)
+    {
+        return $this->createEntry('directus_files', $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateFile($id, array $data)
+    {
+        return $this->updateEntry('directus_files', $id, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteFile($ids)
+    {
+        return $this->deleteEntry('directus_files', $ids);
+    }
+
+
+    /**
      * Get a table gateway for the given table name
      *
      * @param $tableName

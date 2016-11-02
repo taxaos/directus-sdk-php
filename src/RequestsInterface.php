@@ -185,6 +185,7 @@ interface RequestsInterface
     public function updateEntry($tableName, $id, array $data);
 
     /**
+     * Deletes the given entry id(s)
      *
      * @param $tableName
      * @param string|array|Entry|EntryCollection $ids
@@ -192,4 +193,60 @@ interface RequestsInterface
      * @return int
      */
     public function deleteEntry($tableName, $ids);
+
+    /**
+     * Creates a new user
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createUser(array $data);
+
+    /**
+     * Updates the given user id
+     *
+     * @param $id
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function updateUser($id, array $data);
+
+    /**
+     * Deletes the given user id(s)
+     *
+     * @param string|array|Entry|EntryCollection $ids
+     *
+     * @return int
+     */
+    public function deleteUser($ids);
+
+    /**
+     * Creates a new file
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createFile(array $data);
+
+    /**
+     * Updates the given file id
+     *
+     * @param $id
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function updateFile($id, array $data);
+
+    /**
+     * Deletes the given file id(s)
+     *
+     * @param string|array|Entry|EntryCollection $ids
+     *
+     * @return int
+     */
+    public function deleteFile($ids);
 }
