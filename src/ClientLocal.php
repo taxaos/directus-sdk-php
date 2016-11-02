@@ -17,7 +17,6 @@ use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\SDK\Response\EntryCollection;
 use Directus\SDK\Response\Entry;
-use Zend\Db\Sql\Select;
 
 /**
  * Client Local
@@ -49,51 +48,39 @@ class ClientLocal implements RequestsInterface
     }
 
     /**
-     * Gets the list of tables name in the database
-     *
-     * @param array $params
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getTables(array $params = [])
     {
-        return TableSchema::getTablesSchema($params);
+        return $this->createResponseFromData(TableSchema::getTablesSchema($params));
     }
 
     /**
-     * Gets all the columns in the database
-     *
-     * @param array $params
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getColumns(array $params = [])
+    public function getTable($tableName)
     {
-        return TableSchema::getColumnsSchema($params);
+        return $this->createResponseFromData(TableSchema::getSchemaArray($tableName));
     }
 
     /**
-     * Gets table columns
-     *
-     * @param $tableName
-     * @param array $params
-     *
-     * @return \Directus\Database\Object\Column[]
+     * @inheritDoc
      */
-    public function getTableColumns($tableName, array $params = [])
+    public function getColumns($tableName, array $params = [])
     {
-        $tables = TableSchema::getTableColumnsSchema($tableName, $params);
-
-        return $tables;
+        return $this->createResponseFromData(TableSchema::getTableColumnsSchema($tableName, $params));
     }
 
     /**
-     * Gets all the entries in the given table name
-     *
-     * @param string $tableName
-     * @param array $params
-     *
-     * @return Entry|EntryCollection
+     * @inheritDoc
+     */
+    public function getColumn($tableName, $columnName)
+    {
+        return $this->createResponseFromData(TableSchema::getColumnSchemaArray($tableName, $columnName));
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getEntries($tableName, array $params = [])
     {
@@ -103,13 +90,7 @@ class ClientLocal implements RequestsInterface
     }
 
     /**
-     * Gets an entry in the given table name with the given id
-     *
-     * @param string $tableName
-     * @param mixed $id
-     * @param array $params
-     *
-     * @return array|mixed
+     * @inheritDoc
      */
     public function getEntry($tableName, $id, array $params = [])
     {
@@ -120,11 +101,7 @@ class ClientLocal implements RequestsInterface
     }
 
     /**
-     * Gets the list of users
-     *
-     * @param array $params
-     *
-     * @return array|mixed
+     * @inheritDoc
      */
     public function getUsers(array $params = [])
     {
@@ -133,12 +110,7 @@ class ClientLocal implements RequestsInterface
     }
 
     /**
-     * Gets an user by the given id
-     *
-     * @param $id
-     * @param array $params
-     *
-     * @return array|mixed
+     * @inheritDoc
      */
     public function getUser($id, array $params = [])
     {
@@ -148,89 +120,29 @@ class ClientLocal implements RequestsInterface
     /**
      * @inheritDoc
      */
-    public function fetchTables()
+    public function getGroups(array $params = [])
     {
-        // TODO: Implement fetchTables() method.
+        return $this->getEntries('directus_groups', $params);
     }
 
     /**
      * @inheritDoc
      */
-    public function fetchTableInfo($tableName)
+    public function getGroup($id, array $params = [])
     {
-        // TODO: Implement fetchTableInfo() method.
+        return $this->getEntry('directus_groups', $id, $params);
     }
 
     /**
      * @inheritDoc
      */
-    public function fetchColumns($tableName)
+    public function getGroupPrivileges($groupID)
     {
-        // TODO: Implement fetchColumns() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fetchColumnInfo($tableName, $columnName)
-    {
-        // TODO: Implement fetchColumnInfo() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fetchItems($tableName = null, $conditions = [])
-    {
-        if ($tableName == null) {
-            $tableName = $this->getTable();
-        }
-
-        $select = new Select($tableName);
-
-        // Conditional to honor the active column, (does not check if column exists)
-        if (isset($conditions['active'])) {
-            $select->where->equalTo('active', $conditions['active']);
-        }
-
-        // Order by "id desc" by default or by a parameter value
-        if (isset($conditions['sort'])) {
-            $select->order($conditions['sort']);
-        }
-
-        return $this->selectWith($select);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fetchItem($tableName, $itemID)
-    {
-        // TODO: Implement fetchItem() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fetchGroups()
-    {
-        // TODO: Implement fetchGroups() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fetchGroupInfo($groupID)
-    {
-        // TODO: Implement fetchGroupInfo() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fetchGroupPrivileges($groupID)
-    {
-        // TODO: Implement fetchGroupPrivileges() method.
+        $this->getEntries('directus_privileges', [
+            'filter' => [
+                'group_id' => ['eq' => $groupID]
+            ]
+        ]);
     }
 
     /**
@@ -252,17 +164,21 @@ class ClientLocal implements RequestsInterface
     /**
      * @inheritDoc
      */
-    public function fetchSettings()
+    public function getSettings()
     {
-        // TODO: Implement fetchSettings() method.
+        return $this->getEntries('directus_settings');
     }
 
     /**
      * @inheritDoc
      */
-    public function fetchSettingCollection($collectionName)
+    public function getSettingsByCollection($collectionName)
     {
-        // TODO: Implement fetchSettingCollection() method.
+        return $this->getEntries('directus_settings', [
+            'filter' => [
+                'collection' => ['eq' => $collectionName]
+            ]
+        ]);
     }
 
     /**

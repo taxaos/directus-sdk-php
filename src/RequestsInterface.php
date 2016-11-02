@@ -24,47 +24,38 @@ interface RequestsInterface
      *
      * @param array $params
      *
-     * @return array
+     * @return EntryCollection
      */
     public function getTables(array $params = []);
 
     /**
-     * Gets list of the all columns
+     * Gets the details of the given table
      *
-     * @param array $params
+     * @param $tableName
      *
-     * @return array
+     * @return Entry
      */
-    public function getColumns(array $params = []);
+    public function getTable($tableName);
 
     /**
-     * Fetch columns of a given table
+     * Gets columns of a given table
      *
      * @param $tableName
      * @param $params
      *
-     * @return array
+     * @return EntryCollection
      */
-    public function getTableColumns($tableName, array $params = []);
+    public function getColumns($tableName, array $params = []);
 
     /**
-     * Fetch Information of a given table
-     *
-     * @param $tableName
-     *
-     * @return object
-     */
-    public function fetchTableInfo($tableName);
-
-    /**
-     * Fetch details of a given table's column
+     * Gets the details of a given table's column
      *
      * @param $tableName
      * @param $columnName
      *
-     * @return array
+     * @return Entry
      */
-    public function fetchColumnInfo($tableName, $columnName);
+    public function getColumn($tableName, $columnName);
 
     /**
      * Fetch Items from a given table
@@ -72,7 +63,7 @@ interface RequestsInterface
      * @param string $tableName
      * @param array $options
      *
-     * @return object
+     * @return EntryCollection
      */
     public function getEntries($tableName, array $options = []);
 
@@ -83,7 +74,7 @@ interface RequestsInterface
      * @param string $tableName
      * @param array $options
      *
-     * @return array
+     * @return Entry
      */
     public function getEntry($tableName, $id, array $options = []);
 
@@ -92,7 +83,7 @@ interface RequestsInterface
      *
      * @param array $params
      *
-     * @return array
+     * @return EntryCollection
      */
     public function getUsers(array $params = []);
 
@@ -102,39 +93,39 @@ interface RequestsInterface
      * @param $id
      * @param array $params
      *
-     * @return array
+     * @return Entry
      */
     public function getUser($id, array $params = []);
 
     /**
-     * Fetch List of User groups
+     * Gets a list of User groups
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function fetchGroups();
+    public function getGroups();
 
     /**
-     * Fetch the information of a given user group
+     * Gets the information of a given user group
      *
      * @param $groupID
      *
-     * @return object
+     * @return Entry
      */
-    public function fetchGroupInfo($groupID);
+    public function getGroup($groupID);
 
     /**
-     * Fetch a given group privileges
+     * Get a given group privileges
      *
      * @param $groupID
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function fetchGroupPrivileges($groupID);
+    public function getGroupPrivileges($groupID);
 
     /**
      * Gets a list fo files
      *
-     * @return object
+     * @return EntryCollection
      */
     public function getFiles();
 
@@ -143,25 +134,25 @@ interface RequestsInterface
      *
      * @param $fileID
      *
-     * @return mixed
+     * @return Entry
      */
     public function getFile($fileID);
 
     /**
-     * Fetch all settings
+     * Gets all settings
      *
      * @return object
      */
-    public function fetchSettings();
+    public function getSettings();
 
     /**
-     * Fetch all settings in a given collection name
+     * Gets all settings in a given collection name
      *
      * @param $collectionName
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function fetchSettingCollection($collectionName);
+    public function getSettingsByCollection($collectionName);
 
     /**
      * Gets all messages from the given user ID
