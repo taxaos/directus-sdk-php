@@ -25,19 +25,5 @@
             "Directus\\SDK\\": "src/"
         },
         "files": ["src/helpers.php"]
-    },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/directus/directus-permissions"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/directus/directus-hook"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/directus/directus-php-utils"
-        }
-    ]
+    }
 }
