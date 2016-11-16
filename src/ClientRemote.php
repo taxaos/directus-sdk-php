@@ -15,7 +15,7 @@ namespace Directus\SDK;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class ClientRemote extends BaseClientRemote implements RequestsInterface
+class ClientRemote extends BaseClientRemote
 {
     protected $baseEndpoint = 'http://localhost/api';
     protected $hostedBaseEndpointFormat = 'https://%s.directus.io/api';
@@ -25,22 +25,17 @@ class ClientRemote extends BaseClientRemote implements RequestsInterface
         return $this->performRequest('GET', static::TABLE_LIST_ENDPOINT);
     }
 
-    public function fetchTableInfo($tableName)
+    public function getTable($tableName)
     {
         return $this->performRequest('GET', static::TABLE_INFORMATION_ENDPOINT, $tableName);
     }
 
-    public function getColumns(array $params = [])
-    {
-        throw new \Exception('Endpoint not defined yet');
-    }
-
-    public function getTableColumns($tableName, array $params = [])
+    public function getColumns($tableName, array $params = [])
     {
         return $this->performRequest('GET', static::COLUMN_LIST_ENDPOINT, $tableName);
     }
 
-    public function fetchColumnInfo($tableName, $columnName)
+    public function getColumn($tableName, $columnName)
     {
         return $this->performRequest('GET', static::COLUMN_INFORMATION_ENDPOINT, [$tableName, $columnName]);
     }
@@ -50,7 +45,7 @@ class ClientRemote extends BaseClientRemote implements RequestsInterface
         return $this->performRequest('GET', static::TABLE_ENTRIES_ENDPOINT, $tableName);
     }
 
-    public function getEntry($id, $tableName, array $options = [])
+    public function getEntry($tableName, $id, array $options = [])
     {
         return $this->performRequest('GET', static::TABLE_ENTRY_ENDPOINT, [$tableName, $id]);
     }
@@ -65,38 +60,88 @@ class ClientRemote extends BaseClientRemote implements RequestsInterface
         return $this->getEntry($id, 'directus_users', $params);
     }
 
-    public function fetchGroups()
+    public function getGroups()
     {
         return $this->performRequest('GET', static::GROUP_LIST_ENDPOINT);
     }
 
-    public function fetchGroupInfo($groupID)
+    public function getGroup($groupID)
     {
         return $this->performRequest('GET', static::GROUP_INFORMATION_ENDPOINT, $groupID);
     }
 
-    public function fetchGroupPrivileges($groupID)
+    public function getGroupPrivileges($groupID)
     {
         return $this->performRequest('GET', static::GROUP_PRIVILEGES_ENDPOINT, $groupID);
     }
 
-    public function fetchFiles()
+    public function getFiles()
     {
         return $this->performRequest('GET', static::FILE_LIST_ENDPOINT);
     }
 
-    public function fetchFileInfo($fileID)
+    public function getFile($fileID)
     {
         return $this->performRequest('GET', static::FILE_INFORMATION_ENDPOINT, $fileID);
     }
 
-    public function fetchSettings()
+    public function getSettings()
     {
         return $this->performRequest('GET', static::SETTING_LIST_ENDPOINT);
     }
 
-    public function fetchSettingCollection($collectionName)
+    public function getSettingsByCollection($collectionName)
     {
         return $this->performRequest('GET', static::SETTING_COLLECTION_ENDPOINT, $collectionName);
+    }
+
+    public function getMessages($userId)
+    {
+        return $this->performRequest('GET', static::MESSAGES_USER_ENDPOINT, $userId);
+    }
+
+    public function createEntry($tableName, array $data)
+    {
+        return $this->performRequest('POST', static::TABLE_ENTRY_CREATE_ENDPOINT, $tableName, $data);
+    }
+
+    public function updateEntry($tableName, $id, array $data)
+    {
+        // TODO: Implement updateEntry() method.
+    }
+
+    public function deleteEntry($tableName, $ids)
+    {
+        // TODO: Implement deleteEntry() method.
+    }
+
+    public function createUser(array $data)
+    {
+        // TODO: Implement createUser() method.
+    }
+
+    public function updateUser($id, array $data)
+    {
+        // TODO: Implement updateUser() method.
+    }
+
+    public function deleteUser($ids)
+    {
+        // TODO: Implement deleteUser() method.
+    }
+
+    public function createFile(array $data)
+    {
+        // TODO: Implement createFile() method.
+    }
+
+    public function updateFile($id, array $data)
+    {
+        // TODO: Implement updateFile() method.
+    }
+
+    public function deleteFile($ids)
+    {
+        // TODO: Implement deleteFile() method.
     }
 }

@@ -15,8 +15,6 @@ use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
-use Directus\SDK\Response\EntryCollection;
-use Directus\SDK\Response\Entry;
 
 /**
  * Client Local
@@ -25,7 +23,7 @@ use Directus\SDK\Response\Entry;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class ClientLocal implements RequestsInterface
+class ClientLocal extends AbstractClient
 {
     /**
      * @var BaseTableGateway[]
@@ -295,17 +293,5 @@ class ClientLocal implements RequestsInterface
         }
 
         return $this->tableGateways[$tableName];
-    }
-
-    // @TODO: move to a builder class
-    protected function createResponseFromData($data)
-    {
-        if (isset($data['rows'])) {
-            $response = new EntryCollection($data);
-        } else {
-            $response = new Entry($data);
-        }
-
-        return $response;
     }
 }

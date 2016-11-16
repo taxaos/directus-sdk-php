@@ -20,10 +20,10 @@ use Directus\Database\TableSchema;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class Client
+class ClientFactory
 {
     /**
-     * @var Client
+     * @var ClientFactory
      */
     protected static $instance = null;
 

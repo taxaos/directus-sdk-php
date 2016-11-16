@@ -9,6 +9,7 @@
  */
 
 namespace Directus\SDK\Response;
+use Directus\Util\ArrayUtils;
 
 /**
  * Entry
@@ -40,10 +41,20 @@ class Entry implements ResponseInterface, \ArrayAccess
     public function __construct($data)
     {
         $this->rawData = $data;
+
+        // Support API 1.1
+        if (isset($data['data']) && is_array($data['data'])) {
+            $this->metadata = ArrayUtils::get($data, 'meta');
+            unset($data['meta']);
+
+            $data = $data['data'];
+        }
+
         foreach($data as $field => $value) {
-            if (isset($value['rows'])) {
+            if (isset($value['rows']) || (isset($value['data']) && ArrayUtils::isNumericKeys($value['data']))) {
                 $this->data[$field] = new EntryCollection($value);
             } else if (is_array($value)) {
+                var_dump($field, $value);
                 $this->data[$field] = new static($value);
             } else {
                 $this->data[$field] = $value;
@@ -101,6 +112,7 @@ class Entry implements ResponseInterface, \ArrayAccess
 
     public function __get($name)
     {
+        var_dump($this->data);
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         }

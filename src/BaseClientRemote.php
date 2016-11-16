@@ -10,14 +10,16 @@
 
 namespace Directus\SDK;
 
+use Directus\SDK\Exception\UnauthorizedRequestException;
 use GuzzleHttp\Client as HTTPClient;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Abstract Base Client Remote
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-abstract class BaseClientRemote
+abstract class BaseClientRemote extends AbstractClient
 {
     /**
      * Directus Server base endpoint
@@ -70,6 +72,7 @@ abstract class BaseClientRemote
 
     const TABLE_ENTRIES_ENDPOINT = 'tables/%s/rows';
     const TABLE_ENTRY_ENDPOINT = 'tables/%s/rows/%s';
+    const TABLE_ENTRY_CREATE_ENDPOINT = 'tables/%s/rows';
     const TABLE_LIST_ENDPOINT = 'tables';
     const TABLE_INFORMATION_ENDPOINT = 'tables/%s';
     const TABLE_PREFERENCES_ENDPOINT = 'tables/%s/preferences';
@@ -86,6 +89,8 @@ abstract class BaseClientRemote
 
     const SETTING_LIST_ENDPOINT = 'settings';
     const SETTING_COLLECTION_ENDPOINT = 'settings/%s';
+
+    const MESSAGES_USER_ENDPOINT = 'messages/rows/%s';
 
     public function __construct($accessToken, $options = [])
     {
@@ -190,9 +195,19 @@ abstract class BaseClientRemote
     public function performRequest($method, $pathFormat, $variables = [])
     {
         $request = $this->buildRequest($method, $pathFormat, $variables);
-        $response = $this->httpClient->send($request);
 
-        return json_decode($response->getBody()->getContents());
+        try {
+            $response = $this->httpClient->send($request);
+            $content = json_decode($response->getBody()->getContents(), true);
+            return $this->createResponseFromData($content);
+        } catch (ClientException $ex) {
+            if ($ex->getResponse()->getStatusCode() == 401) {
+                $message = sprintf('Unauthorized %s Request to %s', $request->getMethod(), $request->getUrl());
+                throw new UnauthorizedRequestException($message);
+            }
+
+            throw $ex;
+        }
     }
 
     /**
@@ -204,11 +219,17 @@ abstract class BaseClientRemote
      *
      * @return \GuzzleHttp\Message\Request
      */
-    public function buildRequest($method, $pathFormat, $variables = [])
+    public function buildRequest($method, $pathFormat, $variables = [], $body = null)
     {
-        $request = $this->httpClient->createRequest($method, $this->buildPath($pathFormat, $variables), [
+        $options = [
             'auth' => [$this->accessToken, '']
-        ]);
+        ];
+
+        if ($body !== null) {
+            $options['body'] = $body;
+        }
+
+        $request = $this->httpClient->createRequest($method, $this->buildPath($pathFormat, $variables), $options);
 
         return $request;
     }

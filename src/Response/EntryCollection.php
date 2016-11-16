@@ -42,15 +42,53 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
     public function __construct($data)
     {
         $this->rawData = $data;
-        $this->metadata = ArrayUtils::omit($data, 'rows');
+        $this->metadata = $this->pickMetadata($data);
 
-        $rows = isset($data['rows']) ? $data['rows'] : [];
+        $rows = $this->pickRows($data);
         $items = [];
         foreach($rows as $row) {
             $items[] = new Entry($row);
         }
 
         $this->items = $items;
+    }
+
+    /**
+     * Pick the metadata out of the raw data
+     *
+     * @param $data
+     *
+     * @return array|null
+     */
+    protected function pickMetadata($data)
+    {
+        $metadata = null;
+        if (ArrayUtils::has($data, 'rows')) {
+            $metadata = ArrayUtils::omit($data, 'rows');
+        } else if (ArrayUtils::has($data, 'metadata')) {
+            $metadata = ArrayUtils::get($data, 'metadata');
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Pick the "rows" (items) out of the raw data
+     *
+     * @param $data
+     *
+     * @return array
+     */
+    protected function pickRows($data)
+    {
+        $rows = [];
+        if (ArrayUtils::has($data, 'rows')) {
+            $rows = ArrayUtils::get($data, 'rows', []);
+        } else if (ArrayUtils::has($data, 'data')) {
+            $rows = ArrayUtils::get($data, 'data', []);
+        }
+
+        return $rows;
     }
 
     /**
