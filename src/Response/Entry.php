@@ -54,7 +54,6 @@ class Entry implements ResponseInterface, \ArrayAccess
             if (isset($value['rows']) || (isset($value['data']) && ArrayUtils::isNumericKeys($value['data']))) {
                 $this->data[$field] = new EntryCollection($value);
             } else if (is_array($value)) {
-                var_dump($field, $value);
                 $this->data[$field] = new static($value);
             } else {
                 $this->data[$field] = $value;
@@ -112,7 +111,6 @@ class Entry implements ResponseInterface, \ArrayAccess
 
     public function __get($name)
     {
-        var_dump($this->data);
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         }
