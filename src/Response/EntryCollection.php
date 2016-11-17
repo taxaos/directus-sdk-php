@@ -30,7 +30,7 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
     protected $rawData = [];
 
     /**
-     * @var array
+     * @var Entry
      */
     protected $metadata = [];
 
@@ -58,18 +58,18 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
      *
      * @param $data
      *
-     * @return array|null
+     * @return Entry
      */
     protected function pickMetadata($data)
     {
-        $metadata = null;
+        $metadata = [];
         if (ArrayUtils::has($data, 'rows')) {
             $metadata = ArrayUtils::omit($data, 'rows');
         } else if (ArrayUtils::has($data, 'metadata')) {
             $metadata = ArrayUtils::get($data, 'metadata');
         }
 
-        return $metadata;
+        return new Entry($metadata);
     }
 
     /**
@@ -114,7 +114,7 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
     /**
      * Get the response metadata
      *
-     * @return array
+     * @return Entry
      */
     public function getMetaData()
     {

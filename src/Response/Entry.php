@@ -29,7 +29,7 @@ class Entry implements ResponseInterface, \ArrayAccess
     protected $rawData = null;
 
     /**
-     * @var array
+     * @var Entry
      */
     protected $metadata = null;
 
@@ -44,7 +44,7 @@ class Entry implements ResponseInterface, \ArrayAccess
 
         // Support API 1.1
         if (isset($data['data']) && is_array($data['data'])) {
-            $this->metadata = ArrayUtils::get($data, 'meta');
+            $this->metadata = new static(ArrayUtils::get($data, 'meta', []));
             unset($data['meta']);
 
             $data = $data['data'];
@@ -74,7 +74,7 @@ class Entry implements ResponseInterface, \ArrayAccess
     /**
      * Get the entry metadata
      *
-     * @return array
+     * @return Entry
      */
     public function getMetaData()
     {
