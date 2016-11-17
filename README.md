@@ -13,90 +13,29 @@ For PHP driven applications, use this SDK to more easily communicate with your D
 
 ## Install
 
-Via Composer
+### Via Composer
+
+You can install the SDK using [Composer](http://getcomposer.org) by running the command below:
 
 ``` bash
-$ composer init
+$ composer require directus/sdk
 ```
 
-Follow Composer instructions or create a empty `composer.json` file as shown below:
-
+Or add `directus/sdk` to composer `require` list.
 ```json
 {
-  "name": "directus/web-app-example",
-  "description": "Directus web app example"
-}
-```
-
-Add the requires packages:
-
-```json
   "require": {
-    "php": ">=5.4.0",
-    "directus/sdk": "dev-d64"
+    "directus/sdk": "0.9.*"
   }
-```
-The directus SDK package is not available through Packagist it has to be added manually where the repository is located.
-
-```json
-  "minimum-stability": "dev",
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-sdk-php"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-acl"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-hook"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-php-utils"
-    }
-  ]
-```
-
-The result should be like this:
-
-```json
-
-{
-  "name": "directus/web-app-example",
-  "description": "Directus web app example",
-  "require": {
-    "php": ">=5.4.0",
-    "directus/sdk": "dev-d64"
-  },
-  "minimum-stability": "dev",
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-sdk-php"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-acl"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-hook"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-php-utils"
-    }
-  ]
 }
-
 ```
-Now the composer.json is ready, it's time to install the dependencies.
 
-```bash
-composer install
+Then run `composer install`.
+
+To use the SDK you have to include the [composer autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading)
+
+```php
+require_once 'vendor/autoload.php';
 ```
 
 ## Usage
@@ -114,11 +53,11 @@ $config = [
     ]
 ];
 
-$client = \Directus\SDK\Client::create($config);
+$client = \Directus\SDK\ClientFactory::create($config);
 $articles = $client->getEntries('articles');
 
 foreach($articles as $article) {
-    echo '<h2>'.$article->title.'</h2>';
+    echo $article->title . '<br>';
 }
 ```
 
@@ -127,14 +66,15 @@ foreach($articles as $article) {
 ```php
 require 'vendor/autoload.php';
 
-$client = new \Directus\SDK\Client::create('user-token', [
+$client = new \Directus\SDK\ClientFactory::create('user-token', [
     // the sub-domain in your instance url
-    'instance_key' => 'user--instance'
+    'instance_key' => 'user--instance',
+    'version' => '1' // Optional - default 1
 ]);
 
 $articles = $client->getEntries('articles');
 foreach($articles as $article) {
-    echo "<h2>".$article->title."</h2>";
+    echo $article->title . '<br>';
 }
 ```
 
@@ -143,14 +83,14 @@ foreach($articles as $article) {
 ```php
 require 'vendor/autoload.php';
 
-$client = new \Directus\SDK\Client::create('user-token', [
+$client = new \Directus\SDK\ClientFactory::create('user-token', [
     // Directus API Path without its version
     'base_url' => 'http://directus.local/api/',
-    'version' => 1 // Optional - default 1
+    'version' => '1' // Optional - default 1
 ]);
 
 $articles = $client->getEntries('articles');
 foreach($articles as $article) {
-    echo "<h2>".$article->title."</h2>";
+    echo $article->title . '<br>';
 }
 ```
