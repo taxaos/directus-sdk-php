@@ -10,7 +10,6 @@
 
 namespace Directus\SDK;
 
-use Directus\Acl\Acl;
 use Directus\Database\Connection;
 use Directus\Util\ArrayUtils;
 use Directus\Database\TableSchema;
@@ -122,7 +121,7 @@ class ClientFactory
         $connection = new Connection($dbConfig);
         $connection->connect();
 
-        $acl = new Acl();
+        $acl = new \Directus\Permissions\Acl();
         $acl->setUserId(1);
         $acl->setGroupId(1);
         $acl->setGroupPrivileges([
