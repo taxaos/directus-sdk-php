@@ -41,6 +41,9 @@ class Entry implements ResponseInterface, \ArrayAccess
     public function __construct($data)
     {
         $this->rawData = $data;
+        if (!is_array($data)) {
+            return;
+        }
 
         // Support API 1.1
         if (isset($data['data']) && is_array($data['data'])) {
