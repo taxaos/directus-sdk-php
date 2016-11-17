@@ -73,6 +73,8 @@ abstract class BaseClientRemote extends AbstractClient
     const TABLE_ENTRIES_ENDPOINT = 'tables/%s/rows';
     const TABLE_ENTRY_ENDPOINT = 'tables/%s/rows/%s';
     const TABLE_ENTRY_CREATE_ENDPOINT = 'tables/%s/rows';
+    const TABLE_ENTRY_UPDATE_ENDPOINT = 'tables/%s/rows/%s';
+    const TABLE_ENTRY_DELETE_ENDPOINT = 'tables/%s/rows/%s';
     const TABLE_LIST_ENDPOINT = 'tables';
     const TABLE_INFORMATION_ENDPOINT = 'tables/%s';
     const TABLE_PREFERENCES_ENDPOINT = 'tables/%s/preferences';
@@ -192,9 +194,9 @@ abstract class BaseClientRemote extends AbstractClient
         return new HTTPClient(array('base_url' => $this->baseEndpoint));
     }
 
-    public function performRequest($method, $pathFormat, $variables = [])
+    public function performRequest($method, $pathFormat, $variables = [], array $body = [], array $query = [])
     {
-        $request = $this->buildRequest($method, $pathFormat, $variables);
+        $request = $this->buildRequest($method, $pathFormat, $variables, $body, $query);
 
         try {
             $response = $this->httpClient->send($request);
@@ -216,20 +218,29 @@ abstract class BaseClientRemote extends AbstractClient
      * @param $method
      * @param $pathFormat
      * @param $variables
+     * @param $body
+     * @param $query
      *
      * @return \GuzzleHttp\Message\Request
      */
-    public function buildRequest($method, $pathFormat, $variables = [], $body = null)
+    public function buildRequest($method, $pathFormat, $variables = [], array $body = [], array $query = [])
     {
         $options = [
             'auth' => [$this->accessToken, '']
         ];
 
-        if ($body !== null) {
+        if ($method == 'POST' && $body) {
             $options['body'] = $body;
         }
 
         $request = $this->httpClient->createRequest($method, $this->buildPath($pathFormat, $variables), $options);
+
+        if ($query) {
+            $q = $request->getQuery();
+            foreach($query as $key => $value) {
+                $q->set($key, $value);
+            }
+        }
 
         return $request;
     }
