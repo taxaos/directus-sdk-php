@@ -9,6 +9,7 @@
  */
 
 namespace Directus\SDK;
+use Directus\Util\ArrayUtils;
 
 /**
  * Client Remote
@@ -42,7 +43,7 @@ class ClientRemote extends BaseClientRemote
 
     public function getEntries($tableName, array $options = [])
     {
-        return $this->performRequest('GET', static::TABLE_ENTRIES_ENDPOINT, $tableName);
+        return $this->performRequest('GET', static::TABLE_ENTRIES_ENDPOINT, $tableName, null, $options);
     }
 
     public function getEntry($tableName, $id, array $options = [])
@@ -107,41 +108,53 @@ class ClientRemote extends BaseClientRemote
 
     public function updateEntry($tableName, $id, array $data)
     {
-        // TODO: Implement updateEntry() method.
+        return $this->performRequest('PUT', static::TABLE_ENTRY_UPDATE_ENDPOINT, [$tableName, $id], $data);
     }
 
     public function deleteEntry($tableName, $ids)
     {
-        // TODO: Implement deleteEntry() method.
+        return $this->performRequest('DELETE', static::TABLE_ENTRY_DELETE_ENDPOINT, [$tableName, $ids]);
     }
 
     public function createUser(array $data)
     {
-        // TODO: Implement createUser() method.
+        // @TODO: Add hooks
+        if (ArrayUtils::has($data, 'password')) {
+            // @NOTE: Use Directus password hash
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT, ['cost' => 12]);
+        }
+
+        return $this->createEntry('directus_users', $data);
     }
 
     public function updateUser($id, array $data)
     {
-        // TODO: Implement updateUser() method.
+        // @TODO: Add hooks
+        if (ArrayUtils::has($data, 'password')) {
+            // @NOTE: Use Directus password hash
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT, ['cost' => 12]);
+        }
+
+        return $this->updateEntry('directus_users', $id, $data);
     }
 
     public function deleteUser($ids)
     {
-        // TODO: Implement deleteUser() method.
+        return $this->deleteEntry('directus_users', $ids);
     }
 
     public function createFile(array $data)
     {
-        // TODO: Implement createFile() method.
+        return $this->createEntry('directus_files', $data);
     }
 
     public function updateFile($id, array $data)
     {
-        // TODO: Implement updateFile() method.
+        return $this->updateEntry('directus_files', $id, $data);
     }
 
     public function deleteFile($ids)
     {
-        // TODO: Implement deleteFile() method.
+        return $this->deleteEntry('directus_files', $ids);
     }
 }
