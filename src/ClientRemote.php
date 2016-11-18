@@ -216,6 +216,8 @@ class ClientRemote extends BaseClientRemote
     public function createFile(array $data)
     {
         $attributes = [];
+        // @TODO: omit columns such id or user.
+        // $data = ArrayUtils::omit($data, []);
         if (ArrayUtils::has($data, 'file')) {
             $path = $data['file'];
             $ext = pathinfo($path, PATHINFO_EXTENSION);
