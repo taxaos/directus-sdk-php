@@ -10,6 +10,7 @@
 
 namespace Directus\SDK;
 use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 
 /**
  * Client Remote
@@ -214,7 +215,33 @@ class ClientRemote extends BaseClientRemote
      */
     public function createFile(array $data)
     {
-        return $this->createEntry('directus_files', $data);
+        $attributes = [];
+        if (ArrayUtils::has($data, 'file')) {
+            $path = $data['file'];
+            $ext = pathinfo($path, PATHINFO_EXTENSION);
+            $mimeType = mime_content_type($path);
+            $attributes['name'] = pathinfo($path, PATHINFO_FILENAME) . '.' . $ext;
+            $attributes['type'] = $mimeType;
+            $content = file_get_contents($path);
+            $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($content);
+            $attributes['data'] = $base64;
+            unset($data['file']);
+        } else if (ArrayUtils::has($data, 'data')) {
+            $finfo = new \finfo(FILEINFO_MIME);
+            list($mimeType, $charset) = explode('; charset=', $finfo->buffer($data['data']));
+            $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($data['data']);
+            list($type, $subtype) = explode('/', $mimeType);
+            $attributes['data'] = $base64;
+            $attributes['type'] = $mimeType;
+            $attributes['name'] = StringUtils::randomString() . '.' . $subtype;
+            unset($data['data']);
+        } else {
+            throw new \Exception('Missing "file" or "data" attribute.');
+        }
+
+        $data = array_merge($data, $attributes);
+
+        return $this->performRequest('POST', static::FILE_CREATE_ENDPOINT, null, $data);
     }
 
     /**
