@@ -22,6 +22,20 @@ use GuzzleHttp\Exception\ClientException;
 abstract class BaseClientRemote extends AbstractClient
 {
     /**
+     * Directus base url
+     *
+     * @var string
+     */
+    protected $baseUrl = 'http://localhost';
+
+    /**
+     * Directus hosted base url format
+     *
+     * @var string
+     */
+    protected $hostedBaseUrlFormat = 'https://%s.directus.io';
+
+    /**
      * Directus Server base endpoint
      *
      * @var string
@@ -100,17 +114,19 @@ abstract class BaseClientRemote extends AbstractClient
         $this->accessToken = $accessToken;
 
         if (isset($options['base_url'])) {
-            $this->baseEndpoint = $options['base_url'];
+            $this->baseUrl = rtrim($options['base_url'], '/');
+            $this->baseEndpoint = $this->baseUrl . '/api';
         }
 
         $instanceKey = isset($options['instance_key']) ? $options['instance_key'] : false;
         if ($instanceKey) {
             $this->instanceKey = $instanceKey;
-            $this->baseEndpoint = sprintf($this->hostedBaseEndpointFormat, $instanceKey);
+            $this->baseUrl = sprintf($this->hostedBaseUrlFormat, $instanceKey);
+            $this->baseEndpoint = $this->baseUrl . '/api';
         }
 
         $this->apiVersion = isset($options['version']) ? $options['version'] : 1;
-        $this->baseEndpoint = rtrim(rtrim($this->baseEndpoint, '/').'/'.$this->apiVersion, '/').'/';
+        $this->baseEndpoint .= '/' . $this->getAPIVersion();
 
         $this->setHTTPClient($this->getDefaultHTTPClient());
     }
@@ -123,6 +139,16 @@ abstract class BaseClientRemote extends AbstractClient
     public function getBaseEndpoint()
     {
         return $this->baseEndpoint;
+    }
+
+    /**
+     * Get the base url
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
     }
 
     /**
@@ -192,7 +218,7 @@ abstract class BaseClientRemote extends AbstractClient
      */
     public function getDefaultHTTPClient()
     {
-        return new HTTPClient(array('base_url' => $this->baseEndpoint));
+        return new HTTPClient(array('base_url' => rtrim($this->baseEndpoint, '/') . '/'));
     }
 
     public function performRequest($method, $pathFormat, $variables = [], array $body = [], array $query = [])

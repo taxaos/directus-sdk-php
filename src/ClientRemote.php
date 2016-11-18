@@ -19,9 +19,6 @@ use Directus\Util\StringUtils;
  */
 class ClientRemote extends BaseClientRemote
 {
-    protected $baseEndpoint = 'http://localhost/api';
-    protected $hostedBaseEndpointFormat = 'https://%s.directus.io/api';
-
     /**
      * @inheritdoc
      */
