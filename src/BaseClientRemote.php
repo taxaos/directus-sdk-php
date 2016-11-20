@@ -11,6 +11,7 @@
 namespace Directus\SDK;
 
 use Directus\SDK\Exception\UnauthorizedRequestException;
+use Directus\Util\ArrayUtils;
 use GuzzleHttp\Client as HTTPClient;
 use GuzzleHttp\Exception\ClientException;
 
@@ -221,9 +222,9 @@ abstract class BaseClientRemote extends AbstractClient
         return new HTTPClient(array('base_url' => rtrim($this->baseEndpoint, '/') . '/'));
     }
 
-    public function performRequest($method, $pathFormat, $variables = [], array $body = [], array $query = [])
+    public function performRequest($method, $path, array $params = [])
     {
-        $request = $this->buildRequest($method, $pathFormat, $variables, $body, $query);
+        $request = $this->buildRequest($method, $path, $params);
 
         try {
             $response = $this->httpClient->send($request);
@@ -243,15 +244,16 @@ abstract class BaseClientRemote extends AbstractClient
      * Build a request object
      *
      * @param $method
-     * @param $pathFormat
-     * @param $variables
-     * @param $body
-     * @param $query
+     * @param $path
+     * @param $params
      *
      * @return \GuzzleHttp\Message\Request
      */
-    public function buildRequest($method, $pathFormat, $variables = [], array $body = [], array $query = [])
+    public function buildRequest($method, $path, array $params = [])
     {
+        $body = ArrayUtils::get($params, 'body', []);
+        $query = ArrayUtils::get($params, 'query', []);
+        
         $options = [
             'auth' => [$this->accessToken, '']
         ];
@@ -260,7 +262,7 @@ abstract class BaseClientRemote extends AbstractClient
             $options['body'] = $body;
         }
 
-        $request = $this->httpClient->createRequest($method, $this->buildPath($pathFormat, $variables), $options);
+        $request = $this->httpClient->createRequest($method, $path, $options);
 
         if ($query) {
             $q = $request->getQuery();

@@ -32,7 +32,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getTable($tableName)
     {
-        return $this->performRequest('GET', static::TABLE_INFORMATION_ENDPOINT, $tableName);
+        $path = $this->buildPath(static::TABLE_INFORMATION_ENDPOINT, $tableName);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -40,7 +42,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getColumns($tableName, array $params = [])
     {
-        return $this->performRequest('GET', static::COLUMN_LIST_ENDPOINT, $tableName);
+        $path = $this->buildPath(static::COLUMN_LIST_ENDPOINT, $tableName);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -48,7 +52,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getColumn($tableName, $columnName)
     {
-        return $this->performRequest('GET', static::COLUMN_INFORMATION_ENDPOINT, [$tableName, $columnName]);
+        $path = $this->buildPath(static::COLUMN_INFORMATION_ENDPOINT, [$tableName, $columnName]);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -56,7 +62,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getEntries($tableName, array $options = [])
     {
-        return $this->performRequest('GET', static::TABLE_ENTRIES_ENDPOINT, $tableName, null, $options);
+        $path = $this->buildPath(static::TABLE_ENTRIES_ENDPOINT, $tableName);
+
+        return $this->performRequest('GET', $path, ['query' => $options]);
     }
 
     /**
@@ -64,7 +72,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getEntry($tableName, $id, array $options = [])
     {
-        return $this->performRequest('GET', static::TABLE_ENTRY_ENDPOINT, [$tableName, $id]);
+        $path = $this->buildPath(static::TABLE_ENTRY_ENDPOINT, [$tableName, $id]);
+
+        return $this->performRequest('GET', $path, ['query' => $options]);
     }
 
     /**
@@ -96,7 +106,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getGroup($groupID)
     {
-        return $this->performRequest('GET', static::GROUP_INFORMATION_ENDPOINT, $groupID);
+        $path = $this->buildPath(static::GROUP_INFORMATION_ENDPOINT, $groupID);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -104,7 +116,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getGroupPrivileges($groupID)
     {
-        return $this->performRequest('GET', static::GROUP_PRIVILEGES_ENDPOINT, $groupID);
+        $path = $this->buildPath(static::GROUP_PRIVILEGES_ENDPOINT, $groupID);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -120,7 +134,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getFile($fileID)
     {
-        return $this->performRequest('GET', static::FILE_INFORMATION_ENDPOINT, $fileID);
+        $path = $this->buildPath(static::FILE_INFORMATION_ENDPOINT, $fileID);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -136,7 +152,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getSettingsByCollection($collectionName)
     {
-        return $this->performRequest('GET', static::SETTING_COLLECTION_ENDPOINT, $collectionName);
+        $path = $this->buildPath(static::SETTING_COLLECTION_ENDPOINT, $collectionName);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -144,7 +162,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function getMessages($userId)
     {
-        return $this->performRequest('GET', static::MESSAGES_USER_ENDPOINT, $userId);
+        $path = $this->buildPath(static::MESSAGES_USER_ENDPOINT, $userId);
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
@@ -152,7 +172,9 @@ class ClientRemote extends BaseClientRemote
      */
     public function createEntry($tableName, array $data)
     {
-        return $this->performRequest('POST', static::TABLE_ENTRY_CREATE_ENDPOINT, $tableName, $data);
+        $path = $this->buildPath(static::TABLE_ENTRY_CREATE_ENDPOINT, $tableName);
+
+        return $this->performRequest('POST', $path, ['body' => $data]);
     }
 
     /**
@@ -160,15 +182,19 @@ class ClientRemote extends BaseClientRemote
      */
     public function updateEntry($tableName, $id, array $data)
     {
-        return $this->performRequest('PUT', static::TABLE_ENTRY_UPDATE_ENDPOINT, [$tableName, $id], $data);
+        $path = $this->buildPath(static::TABLE_ENTRY_UPDATE_ENDPOINT, [$tableName, $id]);
+
+        return $this->performRequest('PUT', $path, ['body' => $data]);
     }
 
     /**
      * @inheritdoc
      */
-    public function deleteEntry($tableName, $ids)
+    public function deleteEntry($tableName, $id)
     {
-        return $this->performRequest('DELETE', static::TABLE_ENTRY_DELETE_ENDPOINT, [$tableName, $ids]);
+        $path = $this->buildPath(static::TABLE_ENTRY_DELETE_ENDPOINT, [$tableName, $id]);
+
+        return $this->performRequest('DELETE', $path);
     }
 
     /**
@@ -240,7 +266,7 @@ class ClientRemote extends BaseClientRemote
 
         $data = array_merge($data, $attributes);
 
-        return $this->performRequest('POST', static::FILE_CREATE_ENDPOINT, null, $data);
+        return $this->performRequest('POST', static::FILE_CREATE_ENDPOINT, ['body' => $data]);
     }
 
     /**
@@ -254,8 +280,8 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteFile($ids)
+    public function deleteFile($id)
     {
-        return $this->deleteEntry('directus_files', $ids);
+        return $this->deleteEntry('directus_files', $id);
     }
 }
