@@ -253,7 +253,7 @@ abstract class BaseClientRemote extends AbstractClient
     {
         $body = ArrayUtils::get($params, 'body', []);
         $query = ArrayUtils::get($params, 'query', []);
-        
+
         $options = [
             'auth' => [$this->accessToken, '']
         ];
