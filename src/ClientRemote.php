@@ -173,6 +173,7 @@ class ClientRemote extends BaseClientRemote
     public function createEntry($tableName, array $data)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_CREATE_ENDPOINT, $tableName);
+        $data = $this->parseData($tableName, $data);
 
         return $this->performRequest('POST', $path, ['body' => $data]);
     }
@@ -183,6 +184,7 @@ class ClientRemote extends BaseClientRemote
     public function updateEntry($tableName, $id, array $data)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_UPDATE_ENDPOINT, [$tableName, $id]);
+        $data = $this->parseData($tableName, $data);
 
         return $this->performRequest('PUT', $path, ['body' => $data]);
     }
@@ -202,12 +204,6 @@ class ClientRemote extends BaseClientRemote
      */
     public function createUser(array $data)
     {
-        // @TODO: Add hooks
-        if (ArrayUtils::has($data, 'password')) {
-            // @NOTE: Use Directus password hash
-            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT, ['cost' => 12]);
-        }
-
         return $this->createEntry('directus_users', $data);
     }
 
@@ -216,12 +212,6 @@ class ClientRemote extends BaseClientRemote
      */
     public function updateUser($id, array $data)
     {
-        // @TODO: Add hooks
-        if (ArrayUtils::has($data, 'password')) {
-            // @NOTE: Use Directus password hash
-            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT, ['cost' => 12]);
-        }
-
         return $this->updateEntry('directus_users', $id, $data);
     }
 

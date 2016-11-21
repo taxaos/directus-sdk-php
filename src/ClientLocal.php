@@ -196,6 +196,7 @@ class ClientLocal extends AbstractClient
     public function createEntry($tableName, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
+        $data = $this->parseData($tableName, $data);
         $newRecord = $tableGateway->manageRecordUpdate($tableName, $data);
 
         return $this->createResponseFromData($newRecord->toArray());
@@ -207,6 +208,7 @@ class ClientLocal extends AbstractClient
     public function updateEntry($tableName, $id, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
+        $data = $this->parseData($tableName, $data);
         $record = $tableGateway->manageRecordUpdate($tableName, array_merge($data, ['id' => $id]));
 
         return $this->createResponseFromData($record->toArray());
