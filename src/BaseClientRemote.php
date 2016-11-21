@@ -258,7 +258,7 @@ abstract class BaseClientRemote extends AbstractClient
             'auth' => [$this->accessToken, '']
         ];
 
-        if ($method == 'POST' && $body) {
+        if (in_array($method, ['POST', 'PUT']) && $body) {
             $options['body'] = $body;
         }
 
