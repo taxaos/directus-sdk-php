@@ -250,4 +250,12 @@ class ClientRemote extends BaseClientRemote
     {
         return $this->deleteEntry('directus_files', $id);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createActivity($data)
+    {
+        return $this->createEntry('directus_activity', $data);
+    }
 }

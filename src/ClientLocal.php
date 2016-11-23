@@ -279,6 +279,13 @@ class ClientLocal extends AbstractClient
         return $this->deleteEntry('directus_files', $ids);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function createActivity($data)
+    {
+        return $this->createEntry('directus_activity', $data);
+    }
 
     /**
      * Get a table gateway for the given table name
