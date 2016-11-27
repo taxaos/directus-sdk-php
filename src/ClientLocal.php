@@ -197,9 +197,16 @@ class ClientLocal extends AbstractClient
     {
         $tableGateway = $this->getTableGateway($tableName);
         $data = $this->parseData($tableName, $data);
+
+        foreach($data as $key => $value) {
+            if ($value instanceof File) {
+                $data[$key] = $this->parseFile($value);
+            }
+        }
+
         $newRecord = $tableGateway->manageRecordUpdate($tableName, $data);
 
-        return $this->createResponseFromData($newRecord->toArray());
+        return $this->getEntry($tableName, $newRecord[$tableGateway->primaryKeyFieldName]);
     }
 
     /**
@@ -209,9 +216,16 @@ class ClientLocal extends AbstractClient
     {
         $tableGateway = $this->getTableGateway($tableName);
         $data = $this->parseData($tableName, $data);
-        $record = $tableGateway->manageRecordUpdate($tableName, array_merge($data, ['id' => $id]));
 
-        return $this->createResponseFromData($record->toArray());
+        foreach($data as $key => $value) {
+            if ($value instanceof File) {
+                $data[$key] = $this->parseFile($value);
+            }
+        }
+
+        $updatedRecord = $tableGateway->manageRecordUpdate($tableName, array_merge($data, ['id' => $id]));
+
+        return $this->getEntry($tableName, $updatedRecord[$tableGateway->primaryKeyFieldName]);
     }
 
     /**
@@ -258,8 +272,10 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function createFile(array $data)
+    public function createFile(File $file)
     {
+        $data = $this->parseFile($file);
+
         return $this->createEntry('directus_files', $data);
     }
 

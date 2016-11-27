@@ -226,11 +226,9 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function createFile(array $data)
+    public function createFile(File $file)
     {
-        $attributes = $this->parseFile($data);
-
-        $data = array_merge($data, $attributes);
+        $data = $this->parseFile($file);
 
         return $this->performRequest('POST', static::FILE_CREATE_ENDPOINT, ['body' => $data]);
     }

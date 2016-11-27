@@ -9,6 +9,7 @@
  */
 
 namespace Directus\SDK;
+
 use Directus\SDK\Response\Entry;
 use Directus\SDK\Response\EntryCollection;
 
@@ -225,11 +226,11 @@ interface RequestsInterface
     /**
      * Creates a new file
      *
-     * @param array $data
+     * @param File $file
      *
      * @return Entry
      */
-    public function createFile(array $data);
+    public function createFile(File $file);
 
     /**
      * Updates the given file id

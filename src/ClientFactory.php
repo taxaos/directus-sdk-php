@@ -11,6 +11,12 @@
 namespace Directus\SDK;
 
 use Directus\Database\Connection;
+use Directus\Database\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
+use Directus\Filesystem\Files;
+use Directus\Filesystem\Filesystem;
+use Directus\Filesystem\FilesystemFactory;
+use Directus\Hook\Emitter;
 use Directus\Util\ArrayUtils;
 use Directus\Database\TableSchema;
 
@@ -25,6 +31,22 @@ class ClientFactory
      * @var ClientFactory
      */
     protected static $instance = null;
+
+    /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
+     * @var array
+     */
+    protected $config = [];
+
+    protected $settings = [];
+
+    protected $emitter;
+
+    protected $files;
 
     /**
      * @var array
@@ -56,7 +78,26 @@ class ClientFactory
                     'sort' => 2
                 ]
             ]
-        ]
+        ],
+        'filesystem' => [
+            'adapter' => 'local',
+            // By default media directory are located at the same level of directus root
+            // To make them a level up outsite the root directory
+            // use this instead
+            // Ex: 'root' => realpath(BASE_PATH.'/../storage/uploads'),
+            // Note: BASE_PATH constant doesn't end with trailing slash
+            'root' => '/storage/uploads',
+            // This is the url where all the media will be pointing to
+            // here all assets will be (yourdomain)/storage/uploads
+            // same with thumbnails (yourdomain)/storage/uploads/thumbs
+            'root_url' => '/storage/uploads',
+            'root_thumb_url' => '/storage/uploads/thumbs',
+            //   'key'    => 's3-key',
+            //   'secret' => 's3-key',
+            //   'region' => 's3-region',
+            //   'version' => 's3-version',
+            //   'bucket' => 's3-bucket'
+        ],
     ];
 
     /**
@@ -90,7 +131,11 @@ class ClientFactory
      */
     public function createLocalClient(array $options)
     {
+        $this->container = $container = new Container();
+
         $options = ArrayUtils::defaults($this->defaultConfig, $options);
+        $container->set('config', $options);
+
         $dbConfig = ArrayUtils::get($options, 'database', []);
 
         $config = ArrayUtils::omit($options, 'database');
@@ -120,6 +165,7 @@ class ClientFactory
 
         $connection = new Connection($dbConfig);
         $connection->connect();
+        $container->set('connection', $connection);
 
         $acl = new \Directus\Permissions\Acl();
         $acl->setUserId(1);
@@ -140,15 +186,168 @@ class ClientFactory
                 'allow_alter' => 1
             ]
         ]);
+        $container->set('acl', $acl);
 
         $schema = new \Directus\Database\Schemas\Sources\MySQLSchema($connection);
+        $container->set('schemaSource', $schema);
         $schema = new \Directus\Database\SchemaManager($schema);
+        $container->set('schemaManager', $schema);
         TableSchema::setSchemaManagerInstance($schema);
         TableSchema::setAclInstance($acl);
         TableSchema::setConnectionInstance($connection);
         TableSchema::setConfig($config);
 
-        return new ClientLocal($connection);
+        $container->singleton('emitter', function() {
+            return $this->getEmitter();
+        });
+        $container->set('settings', function(Container $container) {
+            $adapter = $container->get('connection');
+            $acl = $container->get('acl');
+            $Settings = new DirectusSettingsTableGateway($adapter, $acl);
+
+            return $Settings->fetchCollection('files', [
+                'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
+            ]);
+        });
+        $container->singleton('files', function() {
+            return $this->getFiles();
+        });
+
+        BaseTableGateway::setHookEmitter($container->get('emitter'));
+        BaseTableGateway::setContainer($container);
+
+        $client = new ClientLocal($connection);
+        $client->setContainer($container);
+
+        return $client;
+    }
+
+    public function getFiles()
+    {
+        static $files = null;
+        if ($files == null) {
+            $config = $this->container->get('config');
+            $filesystemConfig = ArrayUtils::get($config, 'filesystem', []);
+            $filesystem = new Filesystem(FilesystemFactory::createAdapter($filesystemConfig));
+            $settings = $this->container->get('settings');
+            $emitter = $this->container->get('emitter');
+            $files = new Files($filesystem, $filesystemConfig, $settings, $emitter);
+        }
+
+        return $files;
+    }
+
+    protected function getEmitter()
+    {
+        static $emitter = null;
+        if ($emitter) {
+            return $emitter;
+        }
+
+        $emitter = new Emitter();
+
+        $emitter->addAction('table.insert.directus_groups', function ($data) {
+            $acl = Bootstrap::get('acl');
+            $zendDb = Bootstrap::get('zendDb');
+            $privilegesTable = new DirectusPrivilegesTableGateway($zendDb, $acl);
+
+            $privilegesTable->insertPrivilege([
+                'group_id' => $data['id'],
+                'allow_view' => 1,
+                'allow_add' => 0,
+                'allow_edit' => 1,
+                'allow_delete' => 0,
+                'allow_alter' => 0,
+                'table_name' => 'directus_users',
+                'read_field_blacklist' => 'token',
+                'write_field_blacklist' => 'group,token'
+            ]);
+        });
+
+        $emitter->addFilter('table.insert:before', function($payload) {
+            // $tableName, $data
+            if (func_num_args() == 2) {
+                $tableName = func_get_arg(0);
+                $data = func_get_arg(1);
+            } else {
+                $tableName = $payload->tableName;
+                $data = $payload->data;
+            }
+
+            if ($tableName == 'directus_files') {
+                unset($data['data']);
+                $data['user'] = 1;
+            }
+
+            return func_num_args() == 2 ? $data : $payload;
+        });
+
+        // Add file url and thumb url
+        $config = $this->container->get('config');
+        $files = $this->container->get('files');
+        $emitter->addFilter('table.select', function($payload) use ($config, $files) {
+            if (func_num_args() == 2) {
+                $result = func_get_arg(0);
+                $selectState = func_get_arg(1);
+            } else {
+                $selectState = $payload->selectState;
+                $result = $payload->result;
+            }
+
+            if ($selectState['table'] == 'directus_files') {
+                $fileRows = $result->toArray();
+                foreach ($fileRows as &$row) {
+                    $fileURL = ArrayUtils::get($config, 'filesystem.root_url', '');
+                    $thumbnailURL = ArrayUtils::get($config, 'filesystem.root_thumb_url', '');
+                    $thumbnailFilenameParts = explode('.', $row['name']);
+                    $thumbnailExtension = array_pop($thumbnailFilenameParts);
+
+                    $row['url'] = $fileURL . '/' . $row['name'];
+                    if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
+                        $thumbnailExtension = 'jpg';
+                    }
+
+                    $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+
+                    // filename-ext-100-100-true.jpg
+                    // @TODO: This should be another hook listener
+                    $row['thumbnail_url'] = null;
+                    $filename = implode('.', $thumbnailFilenameParts);
+                    if ($row['type'] == 'embed/vimeo') {
+                        $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
+                    } else {
+                        $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
+                    }
+
+                    // 314551321-vimeo-220-124-true.jpg
+                    // hotfix: there's not thumbnail for this file
+                    if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
+                        $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                    }
+
+                    if ($files->exists('thumbs/' . $thumbnailFilename)) {
+                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+                    }
+
+                    /*
+                    $embedManager = Bootstrap::get('embedManager');
+                    $provider = $embedManager->getByType($row['type']);
+                    $row['html'] = null;
+                    if ($provider) {
+                        $row['html'] = $provider->getCode($row);
+                    }
+                    */
+                }
+
+                $filesArrayObject = new \ArrayObject($fileRows);
+                $result->initialize($filesArrayObject->getIterator());
+            }
+
+            return (func_num_args() == 2) ? $result : $payload;
+        });
+
+        return $emitter;
     }
 
     /**

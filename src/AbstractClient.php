@@ -9,6 +9,27 @@ use Directus\Util\StringUtils;
 
 abstract class AbstractClient implements RequestsInterface
 {
+    /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
+     * @param Container $container
+     */
+    public function setContainer(Container $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
     // @TODO: move to a builder class
     protected function createResponseFromData($data)
     {
@@ -31,22 +52,17 @@ abstract class AbstractClient implements RequestsInterface
         return $data;
     }
 
-    protected function parseFile($path)
+    protected function parseFile(File $file)
     {
-        $attributes = [];
-        if (file_exists($path)) {
-            $ext = pathinfo($path, PATHINFO_EXTENSION);
-            $mimeType = mime_content_type($path);
-            $attributes['name'] = pathinfo($path, PATHINFO_FILENAME) . '.' . $ext;
-            $attributes['type'] = $mimeType;
-            $content = file_get_contents($path);
-            $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($content);
-            $attributes['data'] = $base64;
+        $Files = $this->container->get('files');
+        $data = $file->toArray();
+        if (!array_key_exists('type', $data) || strpos($data['type'], 'embed/') === 0) {
+            $recordData = $Files->saveEmbedData($data);
         } else {
-            throw new \Exception('Missing "file" or "data" attribute.');
+            $recordData = $Files->saveData($data['data'], $data['name']);
         }
 
-        return $attributes;
+        return array_merge($recordData, ArrayUtils::omit($data, ['data', 'name']));
     }
 
     protected function parseOnDirectusUsers($data)
