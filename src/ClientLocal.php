@@ -333,6 +333,30 @@ class ClientLocal extends AbstractClient
     }
 
     /**
+     * @inheritdoc
+     */
+    public function createColumn($data)
+    {
+        $requiredAttributes = ['name', 'table', 'type', 'ui'];
+        if (!ArrayUtils::contains($data, $requiredAttributes)) {
+            throw new \Exception(sprintf('%s are required', implode(',', $requiredAttributes)));
+        }
+
+        $data = ArrayUtils::aliasKeys($data, [
+            'table_name' => 'table',
+            'column_name' => 'name',
+            'data_type' => 'type',
+            'char_length' => 'length'
+        ]);
+
+        $tableGateway = $this->getTableGateway($data['table_name']);
+
+        $tableGateway->addColumn($data['table_name'], ArrayUtils::omit($data, ['table_name']));
+
+        return $this->getColumn($data['table_name'], $data['column_name']);
+    }
+
+    /**
      * Get a table gateway for the given table name
      *
      * @param $tableName

@@ -284,4 +284,12 @@ class ClientRemote extends BaseClientRemote
 
         return $this->performRequest('POST', $path, ['body' => $bookmarkData]);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumn($data)
+    {
+        // @TODO: create column
+    }
 }

@@ -268,4 +268,13 @@ interface RequestsInterface
      * @return Entry
      */
     public function createPreferences($data);
+
+    /**
+     * Creates a new Column
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createColumn($data);
 }
