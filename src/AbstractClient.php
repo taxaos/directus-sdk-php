@@ -80,10 +80,26 @@ abstract class AbstractClient implements RequestsInterface
         return $data;
     }
 
-    protected function parseOnDirectusFiles($data)
+    protected function processOnDirectusFiles($data)
     {
-        // @TODO: omit columns such id or user.
+        // @NOTE: omit columns such id or user.
         $data = ArrayUtils::omit($data, ['id', 'user']);
+
+        return $data;
+    }
+
+    protected function processDataOnDirectusPreferences($data)
+    {
+        // @NOTE: omit columns such id or user.
+        $data = ArrayUtils::omit($data, ['id']);
+
+        return $data;
+    }
+
+    protected function processDataOnDirectusBookmarks($data)
+    {
+        // @NOTE: omit columns such id or user.
+        $data = ArrayUtils::omit($data, ['id']);
 
         return $data;
     }

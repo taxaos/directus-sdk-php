@@ -248,4 +248,40 @@ class ClientRemote extends BaseClientRemote
     {
         return $this->deleteEntry('directus_files', $id);
     }
+
+    public function createPreferences($data)
+    {
+        if (!ArrayUtils::contains($data, ['title', 'table_name'])) {
+            throw new \Exception('title and table_name are required');
+        }
+
+        $tableName = ArrayUtils::get($data, 'table_name');
+        $path = $this->buildPath(static::TABLE_PREFERENCES_ENDPOINT, $tableName);
+        $data = $this->processData($tableName, $data);
+
+        return $this->performRequest('POST', $path, ['body' => $data]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createBookmark($data)
+    {
+        $preferences = $this->createPreferences(ArrayUtils::pick($data, [
+            'title', 'table_name', 'sort', 'status', 'search_string', 'sort_order', 'columns_visible'
+        ]));
+
+        $title = $preferences->title;
+        $tableName = $preferences->table_name;
+        $bookmarkData = [
+            'section' => 'search',
+            'title' => $title,
+            'url' => 'tables/' . $tableName . '/pref/' . $title
+        ];
+
+        $path = $this->buildPath(static::TABLE_BOOKMARKS_CREATE_ENDPOINT);
+        $bookmarkData = $this->processData($tableName, $bookmarkData);
+
+        return $this->performRequest('POST', $path, ['body' => $bookmarkData]);
+    }
 }

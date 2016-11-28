@@ -15,6 +15,7 @@ use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
+use Directus\Util\ArrayUtils;
 
 /**
  * Client Local
@@ -293,6 +294,42 @@ class ClientLocal extends AbstractClient
     public function deleteFile($ids)
     {
         return $this->deleteEntry('directus_files', $ids);
+    }
+
+    public function createPreferences($data)
+    {
+        if (!ArrayUtils::contains($data, ['title', 'table_name'])) {
+            throw new \Exception('title and table_name are required');
+        }
+
+        $acl = $this->container->get('acl');
+        $data['user'] = $acl->getUserId();
+
+        return $this->createEntry('directus_preferences', $data);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createBookmark($data)
+    {
+        $acl = $this->container->get('acl');
+        $data['user'] = $acl->getUserId();
+
+        $preferences = $this->createPreferences(ArrayUtils::pick($data, [
+            'title', 'table_name', 'sort', 'status', 'search_string', 'sort_order', 'columns_visible', 'user'
+        ]));
+
+        $title = $preferences->title;
+        $tableName = $preferences->table_name;
+        $bookmarkData = [
+            'section' => 'search',
+            'title' => $title,
+            'url' => 'tables/' . $tableName . '/pref/' . $title,
+            'user' => $data['user']
+        ];
+
+        return $this->createEntry('directus_bookmarks', $bookmarkData);
     }
 
     /**

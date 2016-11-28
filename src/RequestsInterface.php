@@ -250,4 +250,22 @@ interface RequestsInterface
      * @return int
      */
     public function deleteFile($ids);
+
+    /**
+     * Creates a new Bookmark
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createBookmark($data);
+
+    /**
+     * Creates a new Table preferences
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createPreferences($data);
 }

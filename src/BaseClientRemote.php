@@ -93,6 +93,7 @@ abstract class BaseClientRemote extends AbstractClient
     const TABLE_LIST_ENDPOINT = 'tables';
     const TABLE_INFORMATION_ENDPOINT = 'tables/%s';
     const TABLE_PREFERENCES_ENDPOINT = 'tables/%s/preferences';
+    const TABLE_BOOKMARKS_CREATE_ENDPOINT = 'bookmarks';
 
     const COLUMN_LIST_ENDPOINT = 'tables/%s/columns';
     const COLUMN_INFORMATION_ENDPOINT = 'tables/%s/columns/%s';
