@@ -42,9 +42,9 @@ abstract class AbstractClient implements RequestsInterface
         return $response;
     }
 
-    protected function parseData($tableName, array $data)
+    protected function processData($tableName, array $data)
     {
-        $method = 'parseOn' . StringUtils::underscoreToCamelCase($tableName, true);
+        $method = 'processDataOn' . StringUtils::underscoreToCamelCase($tableName, true);
         if (method_exists($this, $method)) {
             $data = call_user_func_array([$this, $method], [$data]);
         }
@@ -52,7 +52,7 @@ abstract class AbstractClient implements RequestsInterface
         return $data;
     }
 
-    protected function parseFile(File $file)
+    protected function processFile(File $file)
     {
         $Files = $this->container->get('files');
         $data = $file->toArray();
@@ -65,7 +65,7 @@ abstract class AbstractClient implements RequestsInterface
         return array_merge($recordData, ArrayUtils::omit($data, ['data', 'name']));
     }
 
-    protected function parseOnDirectusUsers($data)
+    protected function processDataOnDirectusUsers($data)
     {
         $data = ArrayUtils::omit($data, ['id', 'user', 'access_token', 'last_login', 'last_access', 'last_page']);
         if (ArrayUtils::has($data, 'password')) {
@@ -74,7 +74,7 @@ abstract class AbstractClient implements RequestsInterface
         }
 
         if (ArrayUtils::has($data, 'avatar_file_id')) {
-            $data['avatar_file_id'] = $this->parseFile($data['avatar_file_id']);
+            $data['avatar_file_id'] = $this->processFile($data['avatar_file_id']);
         }
 
         return $data;

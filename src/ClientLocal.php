@@ -196,11 +196,11 @@ class ClientLocal extends AbstractClient
     public function createEntry($tableName, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
-        $data = $this->parseData($tableName, $data);
+        $data = $this->processData($tableName, $data);
 
         foreach($data as $key => $value) {
             if ($value instanceof File) {
-                $data[$key] = $this->parseFile($value);
+                $data[$key] = $this->processFile($value);
             }
         }
 
@@ -215,11 +215,11 @@ class ClientLocal extends AbstractClient
     public function updateEntry($tableName, $id, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
-        $data = $this->parseData($tableName, $data);
+        $data = $this->processData($tableName, $data);
 
         foreach($data as $key => $value) {
             if ($value instanceof File) {
-                $data[$key] = $this->parseFile($value);
+                $data[$key] = $this->processFile($value);
             }
         }
 
@@ -274,7 +274,7 @@ class ClientLocal extends AbstractClient
      */
     public function createFile(File $file)
     {
-        $data = $this->parseFile($file);
+        $data = $this->processFile($file);
 
         return $this->createEntry('directus_files', $data);
     }
@@ -293,14 +293,6 @@ class ClientLocal extends AbstractClient
     public function deleteFile($ids)
     {
         return $this->deleteEntry('directus_files', $ids);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function createActivity($data)
-    {
-        return $this->createEntry('directus_activity', $data);
     }
 
     /**

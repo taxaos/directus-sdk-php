@@ -173,7 +173,7 @@ class ClientRemote extends BaseClientRemote
     public function createEntry($tableName, array $data)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_CREATE_ENDPOINT, $tableName);
-        $data = $this->parseData($tableName, $data);
+        $data = $this->processData($tableName, $data);
 
         return $this->performRequest('POST', $path, ['body' => $data]);
     }
@@ -184,7 +184,7 @@ class ClientRemote extends BaseClientRemote
     public function updateEntry($tableName, $id, array $data)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_UPDATE_ENDPOINT, [$tableName, $id]);
-        $data = $this->parseData($tableName, $data);
+        $data = $this->processData($tableName, $data);
 
         return $this->performRequest('PUT', $path, ['body' => $data]);
     }
@@ -228,7 +228,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function createFile(File $file)
     {
-        $data = $this->parseFile($file);
+        $data = $this->processFile($file);
 
         return $this->performRequest('POST', static::FILE_CREATE_ENDPOINT, ['body' => $data]);
     }
@@ -247,13 +247,5 @@ class ClientRemote extends BaseClientRemote
     public function deleteFile($id)
     {
         return $this->deleteEntry('directus_files', $id);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function createActivity($data)
-    {
-        return $this->createEntry('directus_activity', $data);
     }
 }

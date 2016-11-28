@@ -250,13 +250,4 @@ interface RequestsInterface
      * @return int
      */
     public function deleteFile($ids);
-
-    /**
-     * Creates a new activity log
-     *
-     * @param $data
-     *
-     * @return Entry
-     */
-    public function createActivity($data);
 }
