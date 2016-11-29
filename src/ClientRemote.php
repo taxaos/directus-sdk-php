@@ -340,4 +340,16 @@ class ClientRemote extends BaseClientRemote
             'body' => $data
         ]);
     }
+
+    public function createTable($name, array $params = [])
+    {
+        $data = [
+            'addTable' => true,
+            'table_name' => $name
+        ];
+
+        return $this->performRequest('POST', static::TABLE_CREATE_ENDPOINT, [
+            'body' => $data
+        ]);
+    }
 }

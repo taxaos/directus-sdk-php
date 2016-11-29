@@ -94,6 +94,7 @@ abstract class BaseClientRemote extends AbstractClient
     const TABLE_INFORMATION_ENDPOINT = 'tables/%s';
     const TABLE_PREFERENCES_ENDPOINT = 'tables/%s/preferences';
     const TABLE_BOOKMARKS_CREATE_ENDPOINT = 'bookmarks';
+    const TABLE_CREATE_ENDPOINT = 'privileges/1'; // ID not being used but required @TODO: REMOVE IT
 
     const COLUMN_LIST_ENDPOINT = 'tables/%s/columns';
     const COLUMN_CREATE_ENDPOINT = 'tables/%s/columns';

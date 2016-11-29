@@ -19,6 +19,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
+use Directus\Util\SchemaUtils;
 
 /**
  * Client Local
@@ -436,6 +437,38 @@ class ClientLocal extends AbstractClient
         ];
 
         return $this->createResponseFromData($response);
+    }
+
+    public function createTable($name, array $data = [])
+    {
+        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $name);
+        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $name);
+
+        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+            return $this->createResponseFromData(['error' => ['message' => 'invalid_table_name']]);
+        }
+
+        $schema = $this->container->get('schemaManager');
+        $emitter = $this->container->get('emitter');
+        if (!$schema->tableExists($name)) {
+            $emitter->run('table.create:before', $name);
+            // Through API:
+            // Remove spaces and symbols from table name
+            // And in lowercase
+            $name = SchemaUtils::cleanTableName($name);
+            $schema->createTable($name);
+            $emitter->run('table.create', $name);
+            $emitter->run('table.create:after', $name);
+        }
+
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $privileges = new DirectusPrivilegesTableGateway($connection, $acl);
+
+        return $this->createResponseFromData($privileges->insertPrivilege([
+            'group_id' => 1,
+            'table_name' => $name
+        ]));
     }
 
     /**

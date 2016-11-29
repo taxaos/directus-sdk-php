@@ -315,4 +315,14 @@ interface RequestsInterface
      * @return Entry
      */
     public function createPrivileges(array $data);
+
+    /**
+     * Creates
+     *
+     * @param $name
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createTable($name, array $data = []);
 }
