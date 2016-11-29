@@ -290,6 +290,10 @@ class ClientRemote extends BaseClientRemote
      */
     public function createColumn($data)
     {
-        // @TODO: create column
+        $data = $this->parseColumnData($data);
+
+        return $this->performRequest('POST', $this->buildPath(static::COLUMN_CREATE_ENDPOINT, $data['table_name']), [
+            'body' => $data
+        ]);
     }
 }

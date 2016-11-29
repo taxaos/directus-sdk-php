@@ -103,4 +103,21 @@ abstract class AbstractClient implements RequestsInterface
 
         return $data;
     }
+
+    protected function parseColumnData($data)
+    {
+        $requiredAttributes = ['name', 'table', 'type', 'ui'];
+        if (!ArrayUtils::contains($data, $requiredAttributes)) {
+            throw new \Exception(sprintf('%s are required', implode(',', $requiredAttributes)));
+        }
+
+        $data = ArrayUtils::aliasKeys($data, [
+            'table_name' => 'table',
+            'column_name' => 'name',
+            'data_type' => 'type',
+            'char_length' => 'length'
+        ]);
+
+        return $data;
+    }
 }

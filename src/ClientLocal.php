@@ -75,7 +75,7 @@ class ClientLocal extends AbstractClient
      */
     public function getColumn($tableName, $columnName)
     {
-        return $this->createResponseFromData(TableSchema::getColumnSchemaArray($tableName, $columnName));
+        return $this->createResponseFromData(TableSchema::getColumnSchema($tableName, $columnName)->toArray());
     }
 
     /**
@@ -337,17 +337,7 @@ class ClientLocal extends AbstractClient
      */
     public function createColumn($data)
     {
-        $requiredAttributes = ['name', 'table', 'type', 'ui'];
-        if (!ArrayUtils::contains($data, $requiredAttributes)) {
-            throw new \Exception(sprintf('%s are required', implode(',', $requiredAttributes)));
-        }
-
-        $data = ArrayUtils::aliasKeys($data, [
-            'table_name' => 'table',
-            'column_name' => 'name',
-            'data_type' => 'type',
-            'char_length' => 'length'
-        ]);
+        $data = $this->parseColumnData($data);
 
         $tableGateway = $this->getTableGateway($data['table_name']);
 
