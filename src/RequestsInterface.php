@@ -286,4 +286,24 @@ interface RequestsInterface
      * @return Entry
      */
     public function createGroup(array $data);
+
+    /**
+     * Creates new message
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createMessage(array $data);
+
+    /**
+     * Sends a new message
+     *
+     * Alias of createMessage
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function sendMessage(array $data);
 }

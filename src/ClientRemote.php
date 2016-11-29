@@ -251,9 +251,7 @@ class ClientRemote extends BaseClientRemote
 
     public function createPreferences($data)
     {
-        if (!ArrayUtils::contains($data, ['title', 'table_name'])) {
-            throw new \Exception('title and table_name are required');
-        }
+        $this->requiredAttributes(['title', 'table_name'], $data);
 
         $tableName = ArrayUtils::get($data, 'table_name');
         $path = $this->buildPath(static::TABLE_PREFERENCES_ENDPOINT, $tableName);
@@ -305,5 +303,29 @@ class ClientRemote extends BaseClientRemote
         return $this->performRequest('POST', static::GROUP_CREATE_ENDPOINT, [
             'body' => $data
         ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createMessage(array $data)
+    {
+        $this->requiredAttributes(['from', 'message', 'subject'], $data);
+        $this->requiredOneAttribute(['to', 'toGroup'], $data);
+
+        $data['recipients'] = $this->getMessagesTo($data);
+        ArrayUtils::remove($data, ['to', 'toGroup']);
+
+        return $this->performRequest('POST', static::MESSAGES_CREATE_ENDPOINT, [
+            'body' => $data
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function sendMessage(array $data)
+    {
+        return $this->createMessage($data);
     }
 }

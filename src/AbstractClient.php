@@ -120,4 +120,34 @@ abstract class AbstractClient implements RequestsInterface
 
         return $data;
     }
+
+    protected function requiredAttributes(array $attributes, array $data)
+    {
+        if (!ArrayUtils::contains($data, $attributes)) {
+            throw new \Exception(sprintf('These attributes are required: %s', implode(',', $attributes)));
+        }
+    }
+
+    protected function requiredOneAttribute(array $attributes, array $data)
+    {
+        if (!ArrayUtils::containsSome($data, $attributes)) {
+            throw new \Exception(sprintf('These attributes are required: %s', implode(',', $attributes)));
+        }
+    }
+
+    protected function getMessagesTo(array $data)
+    {
+        $isGroup = ArrayUtils::has($data, 'toGroup');
+        $to = ArrayUtils::get($data, 'to', ArrayUtils::get($data, 'toGroup', []));
+
+        if (!is_array($to)) {
+            $to = explode(',', $to);
+        }
+
+        $toIds = array_map(function($id) use ($isGroup) {
+            return sprintf('%s_%s', ($isGroup ? 1 : 0), $id);
+        }, $to);
+
+        return implode(',', $toIds);
+    }
 }

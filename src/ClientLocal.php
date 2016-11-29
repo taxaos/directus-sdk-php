@@ -12,7 +12,9 @@ namespace Directus\SDK;
 
 use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
+use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
@@ -352,6 +354,70 @@ class ClientLocal extends AbstractClient
     public function createGroup(array $data)
     {
         return $this->createEntry('directus_groups', $data);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createMessage(array $data)
+    {
+        $this->requiredAttributes(['from', 'message', 'subject'], $data);
+        $this->requiredOneAttribute(['to', 'toGroup'], $data);
+
+        $recipients = $this->getMessagesTo($data);
+        $recipients = explode(',', $recipients);
+        ArrayUtils::remove($data, ['to', 'toGroup']);
+
+        $groupRecipients = [];
+        $userRecipients = [];
+        foreach ($recipients as $recipient) {
+            $typeAndId = explode('_', $recipient);
+            if ($typeAndId[0] == 0) {
+                $userRecipients[] = $typeAndId[1];
+            } else {
+                $groupRecipients[] = $typeAndId[1];
+            }
+        }
+
+        $ZendDb = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        if (count($groupRecipients) > 0) {
+            $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
+            $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecipients);
+            foreach ($result as $item) {
+                $userRecipients[] = $item['id'];
+            }
+        }
+
+        $userRecipients[] = $acl->getUserId();
+
+        $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
+        $id = $messagesTableGateway->sendMessage($data, array_unique($userRecipients), $acl->getUserId());
+
+        if ($id) {
+            $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
+            $data['id'] = $id;
+            $Activity->recordMessage($data, $acl->getUserId());
+        }
+
+        $message = $messagesTableGateway->fetchMessageWithRecipients($id, $acl->getUserId());
+        $response = [
+            'meta' => [
+                'type' => 'entry',
+                'table' => 'directus_messages'
+            ],
+            'data' => $message
+        ];
+
+        return $this->createResponseFromData($response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function sendMessage(array $data)
+    {
+        return $this->createMessage($data);
     }
 
     /**

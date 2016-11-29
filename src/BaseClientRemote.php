@@ -111,6 +111,7 @@ abstract class BaseClientRemote extends AbstractClient
     const SETTING_LIST_ENDPOINT = 'settings';
     const SETTING_COLLECTION_ENDPOINT = 'settings/%s';
 
+    const MESSAGES_CREATE_ENDPOINT = 'messages/rows';
     const MESSAGES_USER_ENDPOINT = 'messages/rows/%s';
 
     public function __construct($accessToken, $options = [])
