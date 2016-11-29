@@ -306,4 +306,13 @@ interface RequestsInterface
      * @return Entry
      */
     public function sendMessage(array $data);
+
+    /**
+     * Creates a new privileges/permissions
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createPrivileges(array $data);
 }

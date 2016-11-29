@@ -328,4 +328,16 @@ class ClientRemote extends BaseClientRemote
     {
         return $this->createMessage($data);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createPrivileges(array $data)
+    {
+        $this->requiredAttributes(['group_id', 'table_name'], $data);
+
+        return $this->performRequest('POST', static::GROUP_PRIVILEGES_CREATE_ENDPOINT, [
+            'body' => $data
+        ]);
+    }
 }

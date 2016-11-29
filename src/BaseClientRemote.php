@@ -103,6 +103,7 @@ abstract class BaseClientRemote extends AbstractClient
     const GROUP_CREATE_ENDPOINT = 'groups';
     const GROUP_INFORMATION_ENDPOINT = 'groups/%s';
     const GROUP_PRIVILEGES_ENDPOINT = 'privileges/%s';
+    const GROUP_PRIVILEGES_CREATE_ENDPOINT = 'privileges/%s';
 
     const FILE_LIST_ENDPOINT = 'files';
     const FILE_CREATE_ENDPOINT = 'files';

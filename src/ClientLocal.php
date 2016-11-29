@@ -14,6 +14,7 @@ use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
@@ -418,6 +419,23 @@ class ClientLocal extends AbstractClient
     public function sendMessage(array $data)
     {
         return $this->createMessage($data);
+    }
+
+    public function createPrivileges(array $data)
+    {
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $privileges = new DirectusPrivilegesTableGateway($connection, $acl);
+
+        $response = [
+            'meta' => [
+                'type' => 'entry',
+                'table' => 'directus_privileges'
+            ],
+            'data' => $privileges->insertPrivilege($data)
+        ];
+
+        return $this->createResponseFromData($response);
     }
 
     /**
