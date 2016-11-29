@@ -347,6 +347,14 @@ class ClientLocal extends AbstractClient
     }
 
     /**
+     * @inheritdoc
+     */
+    public function createGroup(array $data)
+    {
+        return $this->createEntry('directus_groups', $data);
+    }
+
+    /**
      * Get a table gateway for the given table name
      *
      * @param $tableName

@@ -296,4 +296,14 @@ class ClientRemote extends BaseClientRemote
             'body' => $data
         ]);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createGroup(array $data)
+    {
+        return $this->performRequest('POST', static::GROUP_CREATE_ENDPOINT, [
+            'body' => $data
+        ]);
+    }
 }

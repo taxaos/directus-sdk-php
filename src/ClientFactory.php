@@ -12,6 +12,7 @@ namespace Directus\SDK;
 
 use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Filesystem\Files;
 use Directus\Filesystem\Filesystem;
@@ -245,11 +246,11 @@ class ClientFactory
         }
 
         $emitter = new Emitter();
+        $acl = $this->container->get('acl');
+        $adapter = $this->container->get('connection');
 
-        $emitter->addAction('table.insert.directus_groups', function ($data) {
-            $acl = Bootstrap::get('acl');
-            $zendDb = Bootstrap::get('zendDb');
-            $privilegesTable = new DirectusPrivilegesTableGateway($zendDb, $acl);
+        $emitter->addAction('table.insert.directus_groups', function ($data) use ($acl, $adapter) {
+            $privilegesTable = new DirectusPrivilegesTableGateway($adapter, $acl);
 
             $privilegesTable->insertPrivilege([
                 'group_id' => $data['id'],

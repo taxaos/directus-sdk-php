@@ -277,4 +277,13 @@ interface RequestsInterface
      * @return Entry
      */
     public function createColumn($data);
+
+    /**
+     * Creates a new group
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createGroup(array $data);
 }
