@@ -14,6 +14,7 @@ use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
+use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
@@ -519,6 +520,23 @@ class ClientLocal extends AbstractClient
                 'data' => $response
             ];
         }
+
+        return $this->createResponseFromData($response);
+    }
+
+    public function getPreferences($table, $user)
+    {
+        $acl = $this->container->get('acl');
+        $connection = $this->container->get('connection');
+        $preferencesTableGateway = new DirectusPreferencesTableGateway($connection, $acl);
+
+        $response = [
+            'meta' => [
+                'type' => 'entry',
+                'table' => 'directus_preferences'
+            ],
+            'data' => $preferencesTableGateway->fetchByUserAndTableAndTitle($user, $table)
+        ];
 
         return $this->createResponseFromData($response);
     }

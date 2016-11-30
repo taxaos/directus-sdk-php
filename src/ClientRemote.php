@@ -372,4 +372,9 @@ class ClientRemote extends BaseClientRemote
             'body' => $data
         ]);
     }
+
+    public function getPreferences($table, $user = null)
+    {
+        return $this->performRequest('POST', $this->buildPath(static::TABLE_PREFERENCES_ENDPOINT, $table));
+    }
 }

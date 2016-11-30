@@ -334,4 +334,14 @@ interface RequestsInterface
      * @return Entry
      */
     public function createColumnUIOptions(array $data);
+
+    /**
+     * Gets preferences
+     *
+     * @param $table
+     * @param $user
+     *
+     * @return Entry
+     */
+    public function getPreferences($table, $user);
 }
