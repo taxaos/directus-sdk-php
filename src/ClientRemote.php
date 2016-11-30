@@ -373,8 +373,47 @@ class ClientRemote extends BaseClientRemote
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPreferences($table, $user = null)
     {
         return $this->performRequest('POST', $this->buildPath(static::TABLE_PREFERENCES_ENDPOINT, $table));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteBookmark($id)
+    {
+        return $this->deleteEntry('directus_bookmarks', $id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteColumn($name, $table)
+    {
+        $path = $this->buildPath(static::COLUMN_DELETE_ENDPOINT, [$name, $table]);
+
+        return $this->performRequest('DELETE', $path);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteGroup($id)
+    {
+        return $this->deleteEntry('directus_groups', $id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteTable($name)
+    {
+        $path = $this->buildPath(static::TABLE_DELETE_ENDPOINT, $name);
+
+        return $this->performRequest('DELETE', $path);
     }
 }
