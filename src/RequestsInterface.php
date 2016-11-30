@@ -344,4 +344,41 @@ interface RequestsInterface
      * @return Entry
      */
     public function getPreferences($table, $user);
+
+    /**
+     * Deletes a bookmark
+     *
+     * @param $id
+     *
+     * @return Entry
+     */
+    public function deleteBookmark($id);
+
+    /**
+     * Deletes a column
+     *
+     * @param $name
+     * @param $table
+     *
+     * @return Entry
+     */
+    public function deleteColumn($name, $table);
+
+    /**
+     * Deletes a group
+     *
+     * @param $id
+     *
+     * @return Entry
+     */
+    public function deleteGroup($id);
+
+    /**
+     * Deletes a table
+     *
+     * @param $name
+     *
+     * @return Entry
+     */
+    public function deleteTable($name);
 }

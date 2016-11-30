@@ -542,6 +542,64 @@ class ClientLocal extends AbstractClient
     }
 
     /**
+     * @inheritdoc
+     */
+    public function deleteBookmark($id)
+    {
+        return $this->deleteEntry('directus_bookmarks', $id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteColumn($name, $table)
+    {
+        $tableGateway = $this->getTableGateway($table);
+        $success = $tableGateway->dropColumn($name);
+
+        $response = [
+            'success' => (bool) $success
+        ];
+
+        if (!$success) {
+            $response['error'] = [
+                'message' => sprintf('unable_to_remove_column_%s', ['column_name' => $name])
+            ];
+        }
+
+        return $this->createResponseFromData($response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteGroup($id)
+    {
+        return $this->deleteEntry('directus_groups', $id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteTable($name)
+    {
+        $tableGateway = $this->getTableGateway($name);
+        $success = $tableGateway->drop();
+
+        $response = [
+            'success' => (bool) $success
+        ];
+
+        if (!$success) {
+            $response['error'] = [
+                'message' => sprintf('unable_to_remove_table_%s', ['table_name' => $name])
+            ];
+        }
+
+        return $this->createResponseFromData($response);
+    }
+
+    /**
      * Get a table gateway for the given table name
      *
      * @param $tableName
