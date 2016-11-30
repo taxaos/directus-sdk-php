@@ -352,4 +352,24 @@ class ClientRemote extends BaseClientRemote
             'body' => $data
         ]);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnUIOptions(array $data)
+    {
+        $this->requiredAttributes(['table', 'column', 'ui', 'options'], $data);
+
+        $path = $this->buildPath(static::COLUMN_OPTIONS_CREATE_ENDPOINT, [
+            $data['table'],
+            $data['column'],
+            $data['ui']
+        ]);
+
+        $data = ArrayUtils::get($data, 'options');
+
+        return $this->performRequest('POST', $path, [
+            'body' => $data
+        ]);
+    }
 }

@@ -15,6 +15,7 @@ use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
@@ -469,6 +470,57 @@ class ClientLocal extends AbstractClient
             'group_id' => 1,
             'table_name' => $name
         ]));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnUIOptions(array $data)
+    {
+        $this->requiredAttributes(['table', 'column', 'ui', 'options'], $data);
+        $tableGateway = $this->getTableGateway('directus_ui');
+
+        $table = $data['table'];
+        $column = $data['column'];
+        $ui = $data['ui'];
+
+        $data = $data['options'];
+        $keys = ['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui];
+        $uis = to_name_value($data, $keys);
+
+        $column_settings = [];
+        foreach ($uis as $col) {
+            $existing = $tableGateway->select(['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui, 'name' => $col['name']])->toArray();
+            if (count($existing) > 0) {
+                $col['id'] = $existing[0]['id'];
+            }
+            array_push($column_settings, $col);
+        }
+        $tableGateway->updateCollection($column_settings);
+
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $UiOptions = new DirectusUiTableGateway($connection, $acl);
+        $response = $UiOptions->fetchOptions($table, $column, $ui);
+
+        if (!$response) {
+            $response = [
+                'error' => [
+                    'message' => sprintf('unable_to_find_column_%s_options_for_%s', ['column' => $column, 'ui' => $ui])
+                ],
+                'success' => false
+            ];
+        } else {
+            $response = [
+                'meta' => [
+                    'type' => 'entry',
+                    'table' => 'directus_ui'
+                ],
+                'data' => $response
+            ];
+        }
+
+        return $this->createResponseFromData($response);
     }
 
     /**

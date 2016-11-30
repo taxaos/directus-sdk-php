@@ -325,4 +325,13 @@ interface RequestsInterface
      * @return Entry
      */
     public function createTable($name, array $data = []);
+
+    /**
+     * Creates/Updates column ui options
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createColumnUIOptions(array $data);
 }

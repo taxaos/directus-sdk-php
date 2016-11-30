@@ -99,6 +99,7 @@ abstract class BaseClientRemote extends AbstractClient
     const COLUMN_LIST_ENDPOINT = 'tables/%s/columns';
     const COLUMN_CREATE_ENDPOINT = 'tables/%s/columns';
     const COLUMN_INFORMATION_ENDPOINT = 'tables/%s/columns/%s';
+    const COLUMN_OPTIONS_CREATE_ENDPOINT = 'tables/%s/columns/%s/%s';
 
     const GROUP_LIST_ENDPOINT = 'groups';
     const GROUP_CREATE_ENDPOINT = 'groups';
