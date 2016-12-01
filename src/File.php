@@ -24,11 +24,21 @@ class File implements \JsonSerializable
 
     public function toArray()
     {
-        return array_merge([
-            'title' => $this->title,
-            'caption' => $this->caption,
-            'tags' => $this->tags,
-        ], $this->parseFile());
+        $data = $this->parseFile();
+
+        if ($this->title) {
+            $data['title'] = $this->title;
+        }
+
+        if ($this->tags) {
+            $data['tags'] = $this->tags;
+        }
+
+        if ($this->caption) {
+            $data['caption'] = $this->caption;
+        }
+
+        return $data;
     }
 
     protected function parseFile()

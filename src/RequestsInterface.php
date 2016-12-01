@@ -236,11 +236,11 @@ interface RequestsInterface
      * Updates the given file id
      *
      * @param $id
-     * @param array $data
+     * @param array|File $data
      *
      * @return mixed
      */
-    public function updateFile($id, array $data);
+    public function updateFile($id, $data);
 
     /**
      * Deletes the given file id(s)

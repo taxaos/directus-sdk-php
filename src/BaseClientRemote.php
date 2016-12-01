@@ -111,6 +111,7 @@ abstract class BaseClientRemote extends AbstractClient
 
     const FILE_LIST_ENDPOINT = 'files';
     const FILE_CREATE_ENDPOINT = 'files';
+    const FILE_UPDATE_ENDPOINT = 'files/%s';
     const FILE_INFORMATION_ENDPOINT = 'files/%s';
 
     const SETTING_LIST_ENDPOINT = 'settings';

@@ -289,8 +289,12 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function updateFile($id, array $data)
+    public function updateFile($id, $data)
     {
+        if ($data instanceof File) {
+            $data = $this->processFile($data);
+        }
+
         return $this->updateEntry('directus_files', $id, $data);
     }
 

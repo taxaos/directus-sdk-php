@@ -236,9 +236,17 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function updateFile($id, array $data)
+    public function updateFile($id, $data)
     {
-        return $this->updateEntry('directus_files', $id, $data);
+        if ($data instanceof File) {
+            $data = $data->toArray();
+        }
+
+        $data['id'] = $id;
+        $path = $this->buildPath(static::FILE_UPDATE_ENDPOINT, $id);
+        $data = $this->processData('directus_files', $data);
+
+        return $this->performRequest('POST', $path, ['body' => $data]);
     }
 
     /**
