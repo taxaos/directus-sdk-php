@@ -4,24 +4,48 @@ namespace Directus\SDK;
 
 class File implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
     protected $path;
+
+    /**
+     * @var string
+     */
     protected $title;
+
+    /**
+     * @var string
+     */
     protected $caption;
+
+    /**
+     * @var string
+     */
     protected $tags;
 
-    public function __construct($path, $title = null, $caption = null, $tags = null)
+    public function __construct($path, $attributes = [])
     {
         $this->path = $path;
-        $this->title = $title;
-        $this->caption = $caption;
-        $this->tags = $caption;
+
+        foreach($attributes as $attribute) {
+            if (property_exists($this, $attribute)) {
+                $this->{$attribute} = $attribute;
+            }
+        }
     }
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $data = $this->parseFile();
@@ -41,6 +65,11 @@ class File implements \JsonSerializable
         return $data;
     }
 
+    /**
+     * @return array
+     *
+     * @throws \Exception
+     */
     protected function parseFile()
     {
         $attributes = [];
