@@ -191,7 +191,9 @@ class ClientLocal extends AbstractClient
      */
     public function getMessages($userId)
     {
-        $messagesTableGateway = new DirectusMessagesTableGateway($this->connection, null);
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $messagesTableGateway = new DirectusMessagesTableGateway($connection, $acl);
         $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($userId);
 
         return $this->createResponseFromData($result);
