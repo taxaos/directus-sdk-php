@@ -3,13 +3,12 @@
 </p>
 
 # Directus SDK for PHP
-For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
 
 [![Build Status](https://img.shields.io/travis/directus/directus-sdk-php.svg?style=flat-square)](https://travis-ci.org/directus/directus-sdk-php)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/directus/directus-sdk-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/directus/directus-sdk-php)
 [![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/directus/directus-sdk-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/directus/directus-sdk-php/?branch=master)
 
-## Work In Process.
+For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
 
 ## Install
 
@@ -62,6 +61,8 @@ foreach($articles as $article) {
 ```
 
 ### Directus Hosted
+
+You can sign up for a Directus Hosted account at https://directus.io.
 
 ```php
 require 'vendor/autoload.php';
