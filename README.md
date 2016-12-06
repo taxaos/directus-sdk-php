@@ -44,6 +44,7 @@ require_once 'vendor/autoload.php';
 ## Usage
 
 ### Database connection
+
 ``` php
 require 'vendor/autoload.php';
 
@@ -53,6 +54,9 @@ $config = [
         'username' => 'root',
         'password' => '123',
         'database' => 'directus_db',
+    ],
+    'filesystem' => [
+        'root' => '/path/to/directus/storage/uploads'
     ]
 ];
 
