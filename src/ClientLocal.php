@@ -91,7 +91,7 @@ class ClientLocal extends AbstractClient
     {
         $tableGateway = $this->getTableGateway($tableName);
 
-        return $this->createResponseFromData($tableGateway->getEntries($params));
+        return $this->createResponseFromData($tableGateway->getItems($params));
     }
 
     /**

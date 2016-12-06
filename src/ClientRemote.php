@@ -60,7 +60,7 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function getEntries($tableName, array $options = [])
+    public function getItems($tableName, array $options = [])
     {
         $path = $this->buildPath(static::TABLE_ENTRIES_ENDPOINT, $tableName);
 
@@ -70,7 +70,7 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function getEntry($tableName, $id, array $options = [])
+    public function getItem($tableName, $id, array $options = [])
     {
         $path = $this->buildPath(static::TABLE_ENTRY_ENDPOINT, [$tableName, $id]);
 
@@ -82,7 +82,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function getUsers(array $params = [])
     {
-        return $this->getEntries('directus_users', $params);
+        return $this->getItems('directus_users', $params);
     }
 
     /**
@@ -90,7 +90,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function getUser($id, array $params = [])
     {
-        return $this->getEntry($id, 'directus_users', $params);
+        return $this->getItem($id, 'directus_users', $params);
     }
 
     /**
@@ -170,7 +170,7 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function createEntry($tableName, array $data)
+    public function createItem($tableName, array $data)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_CREATE_ENDPOINT, $tableName);
         $data = $this->processData($tableName, $data);
@@ -181,7 +181,7 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function updateEntry($tableName, $id, array $data)
+    public function updateItem($tableName, $id, array $data)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_UPDATE_ENDPOINT, [$tableName, $id]);
         $data = $this->processData($tableName, $data);
@@ -192,7 +192,7 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteEntry($tableName, $id)
+    public function deleteItem($tableName, $id)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_DELETE_ENDPOINT, [$tableName, $id]);
 
@@ -204,7 +204,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function createUser(array $data)
     {
-        return $this->createEntry('directus_users', $data);
+        return $this->createItem('directus_users', $data);
     }
 
     /**
@@ -212,7 +212,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function updateUser($id, array $data)
     {
-        return $this->updateEntry('directus_users', $id, $data);
+        return $this->updateItem('directus_users', $id, $data);
     }
 
     /**
@@ -220,7 +220,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function deleteUser($ids)
     {
-        return $this->deleteEntry('directus_users', $ids);
+        return $this->deleteItem('directus_users', $ids);
     }
 
     /**
@@ -254,7 +254,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function deleteFile($id)
     {
-        return $this->deleteEntry('directus_files', $id);
+        return $this->deleteItem('directus_files', $id);
     }
 
     public function createPreferences($data)
@@ -394,7 +394,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function deleteBookmark($id)
     {
-        return $this->deleteEntry('directus_bookmarks', $id);
+        return $this->deleteItem('directus_bookmarks', $id);
     }
 
     /**
@@ -412,7 +412,7 @@ class ClientRemote extends BaseClientRemote
      */
     public function deleteGroup($id)
     {
-        return $this->deleteEntry('directus_groups', $id);
+        return $this->deleteItem('directus_groups', $id);
     }
 
     /**
