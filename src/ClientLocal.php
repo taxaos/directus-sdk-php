@@ -87,7 +87,7 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function getEntries($tableName, array $params = [])
+    public function getItems($tableName, array $params = [])
     {
         $tableGateway = $this->getTableGateway($tableName);
 
@@ -97,10 +97,10 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function getEntry($tableName, $id, array $params = [])
+    public function getItem($tableName, $id, array $params = [])
     {
         // @TODO: Dynamic ID
-        return $this->getEntries($tableName, array_merge($params, [
+        return $this->getItems($tableName, array_merge($params, [
             'id' => $id
         ]));
     }
@@ -111,7 +111,7 @@ class ClientLocal extends AbstractClient
     public function getUsers(array $params = [])
     {
         // @TODO: store the directus tables somewhere (SchemaManager?)
-        return $this->getEntries('directus_users', $params);
+        return $this->getItems('directus_users', $params);
     }
 
     /**
@@ -119,7 +119,7 @@ class ClientLocal extends AbstractClient
      */
     public function getUser($id, array $params = [])
     {
-        return $this->getEntry('directus_users', $id, $params);
+        return $this->getItem('directus_users', $id, $params);
     }
 
     /**
@@ -127,7 +127,7 @@ class ClientLocal extends AbstractClient
      */
     public function getGroups(array $params = [])
     {
-        return $this->getEntries('directus_groups', $params);
+        return $this->getItems('directus_groups', $params);
     }
 
     /**
@@ -135,7 +135,7 @@ class ClientLocal extends AbstractClient
      */
     public function getGroup($id, array $params = [])
     {
-        return $this->getEntry('directus_groups', $id, $params);
+        return $this->getItem('directus_groups', $id, $params);
     }
 
     /**
@@ -143,7 +143,7 @@ class ClientLocal extends AbstractClient
      */
     public function getGroupPrivileges($groupID)
     {
-        $this->getEntries('directus_privileges', [
+        $this->getItems('directus_privileges', [
             'filter' => [
                 'group_id' => ['eq' => $groupID]
             ]
@@ -155,7 +155,7 @@ class ClientLocal extends AbstractClient
      */
     public function getFiles(array $params = [])
     {
-        return $this->getEntries('directus_files', $params);
+        return $this->getItems('directus_files', $params);
     }
 
     /**
@@ -163,7 +163,7 @@ class ClientLocal extends AbstractClient
      */
     public function getFile($id, array $params = [])
     {
-        return $this->getEntry('directus_files', $id, $params);
+        return $this->getItem('directus_files', $id, $params);
     }
 
     /**
@@ -171,7 +171,7 @@ class ClientLocal extends AbstractClient
      */
     public function getSettings()
     {
-        return $this->getEntries('directus_settings');
+        return $this->getItems('directus_settings');
     }
 
     /**
@@ -179,7 +179,7 @@ class ClientLocal extends AbstractClient
      */
     public function getSettingsByCollection($collectionName)
     {
-        return $this->getEntries('directus_settings', [
+        return $this->getItems('directus_settings', [
             'filter' => [
                 'collection' => ['eq' => $collectionName]
             ]
@@ -202,7 +202,7 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function createEntry($tableName, array $data)
+    public function createItem($tableName, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
         $data = $this->processData($tableName, $data);
@@ -215,13 +215,13 @@ class ClientLocal extends AbstractClient
 
         $newRecord = $tableGateway->manageRecordUpdate($tableName, $data);
 
-        return $this->getEntry($tableName, $newRecord[$tableGateway->primaryKeyFieldName]);
+        return $this->getItem($tableName, $newRecord[$tableGateway->primaryKeyFieldName]);
     }
 
     /**
      * @inheritDoc
      */
-    public function updateEntry($tableName, $id, array $data)
+    public function updateItem($tableName, $id, array $data)
     {
         $tableGateway = $this->getTableGateway($tableName);
         $data = $this->processData($tableName, $data);
@@ -234,13 +234,13 @@ class ClientLocal extends AbstractClient
 
         $updatedRecord = $tableGateway->manageRecordUpdate($tableName, array_merge($data, ['id' => $id]));
 
-        return $this->getEntry($tableName, $updatedRecord[$tableGateway->primaryKeyFieldName]);
+        return $this->getItem($tableName, $updatedRecord[$tableGateway->primaryKeyFieldName]);
     }
 
     /**
      * @inheritDoc
      */
-    public function deleteEntry($tableName, $ids)
+    public function deleteItem($tableName, $ids)
     {
         // @TODO: Accept EntryCollection and Entry
         $tableGateway = $this->getTableGateway($tableName);
@@ -259,7 +259,7 @@ class ClientLocal extends AbstractClient
      */
     public function createUser(array $data)
     {
-        return $this->createEntry('directus_users', $data);
+        return $this->createItem('directus_users', $data);
     }
 
     /**
@@ -267,7 +267,7 @@ class ClientLocal extends AbstractClient
      */
     public function updateUser($id, array $data)
     {
-        return $this->updateEntry('directus_users', $id, $data);
+        return $this->updateItem('directus_users', $id, $data);
     }
 
     /**
@@ -275,7 +275,7 @@ class ClientLocal extends AbstractClient
      */
     public function deleteUser($ids)
     {
-        return $this->deleteEntry('directus_users', $ids);
+        return $this->deleteItem('directus_users', $ids);
     }
 
     /**
@@ -285,7 +285,7 @@ class ClientLocal extends AbstractClient
     {
         $data = $this->processFile($file);
 
-        return $this->createEntry('directus_files', $data);
+        return $this->createItem('directus_files', $data);
     }
 
     /**
@@ -297,7 +297,7 @@ class ClientLocal extends AbstractClient
             $data = $this->processFile($data);
         }
 
-        return $this->updateEntry('directus_files', $id, $data);
+        return $this->updateItem('directus_files', $id, $data);
     }
 
     /**
@@ -305,7 +305,7 @@ class ClientLocal extends AbstractClient
      */
     public function deleteFile($ids)
     {
-        return $this->deleteEntry('directus_files', $ids);
+        return $this->deleteItem('directus_files', $ids);
     }
 
     public function createPreferences($data)
@@ -317,7 +317,7 @@ class ClientLocal extends AbstractClient
         $acl = $this->container->get('acl');
         $data['user'] = $acl->getUserId();
 
-        return $this->createEntry('directus_preferences', $data);
+        return $this->createItem('directus_preferences', $data);
     }
 
     /**
@@ -341,7 +341,7 @@ class ClientLocal extends AbstractClient
             'user' => $data['user']
         ];
 
-        return $this->createEntry('directus_bookmarks', $bookmarkData);
+        return $this->createItem('directus_bookmarks', $bookmarkData);
     }
 
     /**
@@ -363,7 +363,7 @@ class ClientLocal extends AbstractClient
      */
     public function createGroup(array $data)
     {
-        return $this->createEntry('directus_groups', $data);
+        return $this->createItem('directus_groups', $data);
     }
 
     /**
@@ -413,7 +413,7 @@ class ClientLocal extends AbstractClient
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $acl->getUserId());
         $response = [
             'meta' => [
-                'type' => 'entry',
+                'type' => 'item',
                 'table' => 'directus_messages'
             ],
             'data' => $message
@@ -438,7 +438,7 @@ class ClientLocal extends AbstractClient
 
         $response = [
             'meta' => [
-                'type' => 'entry',
+                'type' => 'item',
                 'table' => 'directus_privileges'
             ],
             'data' => $privileges->insertPrivilege($data)
@@ -520,7 +520,7 @@ class ClientLocal extends AbstractClient
         } else {
             $response = [
                 'meta' => [
-                    'type' => 'entry',
+                    'type' => 'item',
                     'table' => 'directus_ui'
                 ],
                 'data' => $response
@@ -538,7 +538,7 @@ class ClientLocal extends AbstractClient
 
         $response = [
             'meta' => [
-                'type' => 'entry',
+                'type' => 'item',
                 'table' => 'directus_preferences'
             ],
             'data' => $preferencesTableGateway->fetchByUserAndTableAndTitle($user, $table)
@@ -552,7 +552,7 @@ class ClientLocal extends AbstractClient
      */
     public function deleteBookmark($id)
     {
-        return $this->deleteEntry('directus_bookmarks', $id);
+        return $this->deleteItem('directus_bookmarks', $id);
     }
 
     /**
@@ -581,7 +581,7 @@ class ClientLocal extends AbstractClient
      */
     public function deleteGroup($id)
     {
-        return $this->deleteEntry('directus_groups', $id);
+        return $this->deleteItem('directus_groups', $id);
     }
 
     /**

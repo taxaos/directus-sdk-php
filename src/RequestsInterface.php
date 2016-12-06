@@ -66,7 +66,7 @@ interface RequestsInterface
      *
      * @return EntryCollection
      */
-    public function getEntries($tableName, array $options = []);
+    public function getItems($tableName, array $options = []);
 
     /**
      * Get an entry in a given table by the given ID
@@ -77,7 +77,7 @@ interface RequestsInterface
      *
      * @return Entry
      */
-    public function getEntry($tableName, $id, array $options = []);
+    public function getItem($tableName, $id, array $options = []);
 
     /**
      * Gets the list of users
@@ -165,17 +165,17 @@ interface RequestsInterface
     public function getMessages($userId);
 
     /**
-     * Create a new entry in the given table name
+     * Create a new item in the given table name
      *
      * @param $tableName
      * @param array $data
      *
      * @return Entry
      */
-    public function createEntry($tableName, array $data);
+    public function createItem($tableName, array $data);
 
     /**
-     * Update the entry of the given table and id
+     * Update the item of the given table and id
      *
      * @param $tableName
      * @param $id
@@ -183,17 +183,17 @@ interface RequestsInterface
      *
      * @return mixed
      */
-    public function updateEntry($tableName, $id, array $data);
+    public function updateItem($tableName, $id, array $data);
 
     /**
-     * Deletes the given entry id(s)
+     * Deletes the given item id(s)
      *
      * @param $tableName
      * @param string|array|Entry|EntryCollection $ids
      *
      * @return int
      */
-    public function deleteEntry($tableName, $ids);
+    public function deleteItem($tableName, $ids);
 
     /**
      * Creates a new user
