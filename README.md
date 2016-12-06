@@ -10,6 +10,10 @@
 
 For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
 
+## Requirements
+
+PHP version 5.4 or greater.
+
 ## Install
 
 ### Via Composer
