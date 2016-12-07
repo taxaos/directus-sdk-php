@@ -347,6 +347,29 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritdoc
      */
+    public function getBookmark($id)
+    {
+        return $this->getItem('directus_bookmarks', $id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBookmarks($userId = null)
+    {
+        $filters = [];
+        if ($userId !== null) {
+            $filters = [
+                'filters' => ['user' => ['eq' => $userId]]
+            ];
+        }
+
+        return $this->getItems('directus_bookmarks', $filters);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function createColumn($data)
     {
         $data = $this->parseColumnData($data);

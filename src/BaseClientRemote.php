@@ -85,6 +85,12 @@ abstract class BaseClientRemote extends AbstractClient
      */
     protected $timeout = 60;
 
+    const BOOKMARKS_CREATE_ENDPOINT = 'bookmarks';
+    const BOOKMARKS_READ_ENDPOINT = 'bookmarks/%s';
+    const BOOKMARKS_DELETE_ENDPOINT = 'bookmarks/%s';
+    const BOOKMARKS_ALL_ENDPOINT = 'bookmarks';
+    const BOOKMARKS_USER_ENDPOINT = 'bookmarks/user/%s';
+
     const TABLE_ENTRIES_ENDPOINT = 'tables/%s/rows';
     const TABLE_ENTRY_ENDPOINT = 'tables/%s/rows/%s';
     const TABLE_ENTRY_CREATE_ENDPOINT = 'tables/%s/rows';
@@ -93,7 +99,6 @@ abstract class BaseClientRemote extends AbstractClient
     const TABLE_LIST_ENDPOINT = 'tables';
     const TABLE_INFORMATION_ENDPOINT = 'tables/%s';
     const TABLE_PREFERENCES_ENDPOINT = 'tables/%s/preferences';
-    const TABLE_BOOKMARKS_CREATE_ENDPOINT = 'bookmarks';
     const TABLE_CREATE_ENDPOINT = 'privileges/1'; // ID not being used but required @TODO: REMOVE IT
     const TABLE_DELETE_ENDPOINT = 'tables/%s';
 

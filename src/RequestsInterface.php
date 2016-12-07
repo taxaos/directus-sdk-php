@@ -261,6 +261,24 @@ interface RequestsInterface
     public function createBookmark($data);
 
     /**
+     * Gets a Bookmark with the given id
+     *
+     * @param int $id
+     *
+     * @return Entry
+     */
+    public function getBookmark($id);
+
+    /**
+     * Gets a Bookmarks
+     *
+     * @param int $userId
+     *
+     * @return Entry
+     */
+    public function getBookmarks($userId = null);
+
+    /**
      * Creates a new Table preferences
      *
      * @param $data

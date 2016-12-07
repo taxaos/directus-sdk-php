@@ -285,10 +285,34 @@ class ClientRemote extends BaseClientRemote
             'url' => 'tables/' . $tableName . '/pref/' . $title
         ];
 
-        $path = $this->buildPath(static::TABLE_BOOKMARKS_CREATE_ENDPOINT);
+        $path = $this->buildPath(static::BOOKMARKS_CREATE_ENDPOINT);
         $bookmarkData = $this->processData($tableName, $bookmarkData);
 
         return $this->performRequest('POST', $path, ['body' => $bookmarkData]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBookmark($id)
+    {
+        $path = $this->buildPath(static::BOOKMARKS_READ_ENDPOINT, $id);
+
+        return $this->performRequest('GET', $path);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBookmarks($userId = null)
+    {
+        if ($userId !== null) {
+            $path = $this->buildPath(static::BOOKMARKS_USER_ENDPOINT, $userId);
+        } else {
+            $path = $this->buildPath(static::BOOKMARKS_ALL_ENDPOINT);
+        }
+
+        return $this->performRequest('GET', $path);
     }
 
     /**
