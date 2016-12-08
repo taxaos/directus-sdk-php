@@ -65,8 +65,8 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
         $metadata = [];
         if (ArrayUtils::has($data, 'rows')) {
             $metadata = ArrayUtils::omit($data, 'rows');
-        } else if (ArrayUtils::has($data, 'metadata')) {
-            $metadata = ArrayUtils::get($data, 'metadata');
+        } else if (ArrayUtils::has($data, 'meta')) {
+            $metadata = ArrayUtils::get($data, 'meta');
         }
 
         return new Entry($metadata);
@@ -169,7 +169,7 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
     public function jsonSerialize()
     {
         return (object) [
-            'metadata' => $this->metadata,
+            'meta' => $this->metadata,
             'data' => $this->items
         ];
     }
