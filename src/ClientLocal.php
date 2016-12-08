@@ -16,6 +16,7 @@ use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
@@ -180,11 +181,34 @@ class ClientLocal extends AbstractClient
      */
     public function getSettingsByCollection($collectionName)
     {
-        return $this->getItems('directus_settings', [
-            'filter' => [
-                'collection' => ['eq' => $collectionName]
-            ]
-        ]);
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $tableGateway = new DirectusSettingsTableGateway($connection, $acl);
+
+        $data = [
+            'meta' => [
+                'table' => 'directus_settings',
+                'type' => 'entry',
+                'settings_collection' => $collectionName
+            ],
+            'data' => $tableGateway->fetchCollection($collectionName)
+        ];
+
+        return $this->createResponseFromData($data);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateSettings($collection, array $data)
+    {
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $tableGateway = new DirectusSettingsTableGateway($connection, $acl);
+
+        $tableGateway->setValues($collection, $data);
+
+        return $this->getSettingsByCollection($collection);
     }
 
     /**

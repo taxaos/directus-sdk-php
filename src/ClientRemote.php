@@ -153,9 +153,21 @@ class ClientRemote extends BaseClientRemote
      */
     public function getSettingsByCollection($collectionName)
     {
-        $path = $this->buildPath(static::SETTING_COLLECTION_ENDPOINT, $collectionName);
+        $path = $this->buildPath(static::SETTING_COLLECTION_GET_ENDPOINT, $collectionName);
 
         return $this->performRequest('GET', $path);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateSettings($collection, array $data)
+    {
+        $path = $this->buildPath(static::SETTING_COLLECTION_UPDATE_ENDPOINT, $collection);
+
+        return $this->performRequest('PUT', $path, [
+            'body' => $data
+        ]);
     }
 
     /**

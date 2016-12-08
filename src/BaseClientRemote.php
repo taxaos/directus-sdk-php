@@ -122,7 +122,8 @@ abstract class BaseClientRemote extends AbstractClient
     const FILE_INFORMATION_ENDPOINT = 'files/%s';
 
     const SETTING_LIST_ENDPOINT = 'settings';
-    const SETTING_COLLECTION_ENDPOINT = 'settings/%s';
+    const SETTING_COLLECTION_GET_ENDPOINT = 'settings/%s';
+    const SETTING_COLLECTION_UPDATE_ENDPOINT = 'settings/%s';
 
     const MESSAGES_CREATE_ENDPOINT = 'messages/rows';
     const MESSAGES_USER_ENDPOINT = 'messages/rows/%s';

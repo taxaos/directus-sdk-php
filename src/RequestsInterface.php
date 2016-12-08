@@ -156,6 +156,16 @@ interface RequestsInterface
     public function getSettingsByCollection($collectionName);
 
     /**
+     * Updates settings in the given collection
+     *
+     * @param $collection
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function updateSettings($collection, array $data);
+
+    /**
      * Gets all messages from the given user ID
      *
      * @param $userId
