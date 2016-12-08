@@ -21,6 +21,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateUtils;
 use Directus\Util\SchemaUtils;
 
 /**
@@ -626,6 +627,20 @@ class ClientLocal extends AbstractClient
         }
 
         return $this->createResponseFromData($response);
+    }
+
+    public function getActivity(array $params = [])
+    {
+        $connection = $this->container->get('connection');
+        $acl = $this->container->get('acl');
+        $tableGateway = new DirectusActivityTableGateway($connection, $acl);
+        if (!ArrayUtils::has($params, 'filters.datetime')) {
+            $params['filters']['datetime'] = ['>=' => DateUtils::daysAgo(30)];
+        }
+
+        $data = $tableGateway->fetchFeed($params);
+
+        return $this->createResponseFromData($data);
     }
 
     /**

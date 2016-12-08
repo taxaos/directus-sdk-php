@@ -10,6 +10,7 @@
 
 namespace Directus\SDK;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 
 /**
@@ -447,5 +448,21 @@ class ClientRemote extends BaseClientRemote
         $path = $this->buildPath(static::TABLE_DELETE_ENDPOINT, $name);
 
         return $this->performRequest('DELETE', $path);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getActivity(array $params = [])
+    {
+        if (!ArrayUtils::has($params, 'filters.datetime')) {
+            $params['filters']['datetime'] = ['>=' => DateUtils::daysAgo(30)];
+        }
+
+        $path = $this->buildPath(static::ACTIVITY_GET_ENDPOINT);
+
+        return $this->performRequest('GET', $path, [
+            'query' => $params
+        ]);
     }
 }

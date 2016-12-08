@@ -399,4 +399,13 @@ interface RequestsInterface
      * @return Entry
      */
     public function deleteTable($name);
+
+    /**
+     * Gets activity records
+     *
+     * @param array $params
+     *
+     * @return Entry
+     */
+    public function getActivity(array $params = []);
 }

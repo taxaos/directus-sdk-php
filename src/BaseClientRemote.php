@@ -85,6 +85,8 @@ abstract class BaseClientRemote extends AbstractClient
      */
     protected $timeout = 60;
 
+    const ACTIVITY_GET_ENDPOINT = 'activity';
+
     const BOOKMARKS_CREATE_ENDPOINT = 'bookmarks';
     const BOOKMARKS_READ_ENDPOINT = 'bookmarks/%s';
     const BOOKMARKS_DELETE_ENDPOINT = 'bookmarks/%s';
