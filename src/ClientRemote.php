@@ -11,7 +11,6 @@
 namespace Directus\SDK;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
-use Directus\Util\StringUtils;
 
 /**
  * Client Remote
@@ -173,9 +172,23 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function getMessages($userId)
+    public function getMessages($userId = null)
     {
-        $path = $this->buildPath(static::MESSAGES_USER_ENDPOINT, $userId);
+        if ($userId !== null) {
+            $path = $this->buildPath(static::MESSAGES_USER_LIST_ENDPOINT, $userId);
+        } else {
+            $path = $this->buildPath(static::MESSAGES_LIST_ENDPOINT);
+        }
+
+        return $this->performRequest('GET', $path);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMessage($id)
+    {
+        $path = $this->buildPath(static::MESSAGES_GET_ENDPOINT, $id);
 
         return $this->performRequest('GET', $path);
     }

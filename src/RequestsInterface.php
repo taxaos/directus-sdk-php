@@ -166,13 +166,22 @@ interface RequestsInterface
     public function updateSettings($collection, array $data);
 
     /**
+     * Gets messages with the given ID
+     *
+     * @param $id
+     *
+     * @return Entry
+     */
+    public function getMessage($id);
+
+    /**
      * Gets all messages from the given user ID
      *
      * @param $userId
      *
      * @return EntryCollection
      */
-    public function getMessages($userId);
+    public function getMessages($userId = null);
 
     /**
      * Create a new item in the given table name
