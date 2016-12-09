@@ -83,7 +83,7 @@ class File implements \JsonSerializable
             $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($content);
             $attributes['data'] = $base64;
         } else {
-            throw new \Exception('Missing "file" or "data" attribute.');
+            throw new \Exception(sprintf('File %s not found', $path));
         }
 
         return $attributes;
