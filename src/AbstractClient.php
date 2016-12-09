@@ -54,8 +54,14 @@ abstract class AbstractClient implements RequestsInterface
 
     protected function processFile(File $file)
     {
-        $Files = $this->container->get('files');
         $data = $file->toArray();
+        // Not container, we are using remote :)
+        if (!$this->container) {
+            return $data;
+        }
+
+        $Files = $this->container->get('files');
+
         if (!array_key_exists('type', $data) || strpos($data['type'], 'embed/') === 0) {
             $recordData = $Files->saveEmbedData($data);
         } else {
