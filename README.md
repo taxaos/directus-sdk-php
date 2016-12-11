@@ -94,7 +94,7 @@ require 'vendor/autoload.php';
 
 $client = \Directus\SDK\ClientFactory::create('user-token', [
     // Directus API Path without its version
-    'base_url' => 'http://directus.local/api/',
+    'base_url' => 'http://directus.local',
     'version' => '1' // Optional - default 1
 ]);
 
