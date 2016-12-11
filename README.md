@@ -75,7 +75,7 @@ You can sign up for a Directus Hosted account at https://directus.io.
 ```php
 require 'vendor/autoload.php';
 
-$client = new \Directus\SDK\ClientFactory::create('user-token', [
+$client = \Directus\SDK\ClientFactory::create('user-token', [
     // the sub-domain in your instance url
     'instance_key' => 'user--instance',
     'version' => '1' // Optional - default 1
@@ -92,7 +92,7 @@ foreach($articles as $article) {
 ```php
 require 'vendor/autoload.php';
 
-$client = new \Directus\SDK\ClientFactory::create('user-token', [
+$client = \Directus\SDK\ClientFactory::create('user-token', [
     // Directus API Path without its version
     'base_url' => 'http://directus.local/api/',
     'version' => '1' // Optional - default 1
