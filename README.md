@@ -61,7 +61,7 @@ $config = [
 ];
 
 $client = \Directus\SDK\ClientFactory::create($config);
-$articles = $client->getEntries('articles');
+$articles = $client->getItems('articles');
 
 foreach($articles as $article) {
     echo $article->title . '<br>';
@@ -81,7 +81,7 @@ $client = new \Directus\SDK\ClientFactory::create('user-token', [
     'version' => '1' // Optional - default 1
 ]);
 
-$articles = $client->getEntries('articles');
+$articles = $client->getItems('articles');
 foreach($articles as $article) {
     echo $article->title . '<br>';
 }
@@ -98,7 +98,7 @@ $client = new \Directus\SDK\ClientFactory::create('user-token', [
     'version' => '1' // Optional - default 1
 ]);
 
-$articles = $client->getEntries('articles');
+$articles = $client->getItems('articles');
 foreach($articles as $article) {
     echo $article->title . '<br>';
 }
