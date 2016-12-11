@@ -3,7 +3,7 @@
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Directus\SDK\Client
+     * @var \Directus\SDK\ClientRemote
      */
     protected $client;
 
@@ -16,7 +16,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->client = new \Directus\SDK\Client('token');
+        $this->client = \Directus\SDK\ClientFactory::create('token');
         $this->httpClient = $this->client->getHTTPClient();
     }
 
@@ -36,18 +36,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testOptions()
     {
-        $client = new \Directus\SDK\Client('token', [
+        $client = \Directus\SDK\ClientFactory::create('token', [
             'base_url' => 'http://directus.local'
         ]);
 
-        $this->assertSame('http://directus.local/1/', $client->getBaseEndpoint());
+        $this->assertSame('http://directus.local/api/1', $client->getBaseEndpoint());
 
-        $client = new \Directus\SDK\Client('token', [
+        $client = \Directus\SDK\ClientFactory::create('token', [
             'base_url' => 'http://directus.local',
             'version' => 2
         ]);
 
-        $this->assertSame('http://directus.local/2/', $client->getBaseEndpoint());
+        $this->assertSame('http://directus.local/api/2', $client->getBaseEndpoint());
 
         $this->assertEquals(2, $client->getAPIVersion());
     }
@@ -55,12 +55,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testHostedClient()
     {
         $instanceKey = 'account--instance';
-        $client = new \Directus\SDK\Client('token', ['instance_key' => $instanceKey]);
+        $client = \Directus\SDK\ClientFactory::create('token', ['instance_key' => $instanceKey]);
 
-        $expectedEndpoint = 'https://'.$instanceKey.'.directus.io/api/1/';
+        $expectedBaseUrl = 'https://'.$instanceKey.'.directus.io';
+        $expectedEndpoint = $expectedBaseUrl . '/api/1';
+        $this->assertSame($expectedBaseUrl, $client->getBaseUrl());
         $this->assertSame($expectedEndpoint, $client->getBaseEndpoint());
 
-        $client = new \Directus\SDK\Client('token', [
+        $client = \Directus\SDK\ClientFactory::create('token', [
             'base_url' => 'http://directus.local',
             'instance_key' => $instanceKey
         ]);
@@ -72,7 +74,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testRequest()
     {
         $client = $this->client;
-        $request = $this->client->buildRequest('GET', $client::TABLE_ENTRIES_ENDPOINT, 'articles');
+        $path = $client->buildPath($client::TABLE_ENTRIES_ENDPOINT, 'articles');
+        $request = $this->client->buildRequest('GET', $path);
         $this->assertInstanceOf('\GuzzleHttp\Message\Request', $request);
     }
 
@@ -129,169 +132,162 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testFetchTables()
     {
         $this->mockResponse('fetchTables.txt');
-        $response = $this->client->fetchTables();
-        $this->assertInternalType('array', $response);
+        $response = $this->client->getTables();
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
 
         $this->mockResponse('fetchTablesEmpty.txt');
-        $response = $this->client->fetchTables();
-        $this->assertInternalType('array', $response);
+        $response = $this->client->getTables();
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
     }
 
     public function testFetchTableInformation()
     {
         $this->mockResponse('fetchTableInformation.txt');
-        $response = $this->client->fetchTableInfo('articles');
-        $this->assertInternalType('object', $response);
+        $response = $this->client->getTable('articles');
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
 
         $this->mockResponse('fetchTableInformationEmpty.txt');
-        $response = $this->client->fetchTableInfo('articles');
-        $this->assertFalse($response);
+        $response = $this->client->getTable('articles');
+        $this->assertFalse($response->getRawData());
     }
 
     public function testFetchTablePreferences()
     {
         $this->mockResponse('fetchTablePreferences.txt');
-        $response = $this->client->fetchTableInfo('articles');
+        $response = $this->client->getTable('articles');
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchTablePreferencesEmpty.txt');
-        $response = $this->client->fetchTableInfo('articles');
-        $this->assertFalse($response);
+        $response = $this->client->getTable('articles');
+        $this->assertFalse($response->getRawData());
     }
 
     public function testFetchItems()
     {
         $this->mockResponse('fetchItems.txt');
-        $response = $this->client->fetchItems('articles');
+        $response = $this->client->getUsers();
 
-        $this->assertObjectHasAttribute('Active', $response);
-        $this->assertObjectHasAttribute('Draft', $response);
-        $this->assertObjectHasAttribute('Delete', $response);
-        $this->assertObjectHasAttribute('rows', $response);
-        $this->assertInternalType('array', $response->rows);
+        $this->assertInstanceOf('\Directus\SDK\Response\EntryCollection', $response);
+        $this->assertArrayHasKey('Active', $response->getMetaData()->getRawData());
+        $this->assertArrayHasKey('Draft', $response->getMetaData()->getRawData());
+        $this->assertArrayHasKey('Delete', $response->getMetaData()->getRawData());
 
         $this->mockResponse('fetchItemsEmpty.txt');
-        $response = $this->client->fetchItems('articles');
+        $response = $this->client->getUsers();
 
-        $this->assertObjectHasAttribute('Active', $response);
-        $this->assertObjectHasAttribute('Draft', $response);
-        $this->assertObjectHasAttribute('Delete', $response);
-        $this->assertObjectHasAttribute('rows', $response);
-        $this->assertInternalType('array', $response->rows);
+        $this->assertInstanceOf('\Directus\SDK\Response\EntryCollection', $response);
+        $this->assertArrayHasKey('Active', $response->getMetaData()->getRawData());
+        $this->assertArrayHasKey('Draft', $response->getMetaData()->getRawData());
+        $this->assertArrayHasKey('Delete', $response->getMetaData()->getRawData());
     }
 
     public function testFetchItem()
     {
         $this->mockResponse('fetchItem.txt');
-        $response = $this->client->fetchItem('articles', 1);
+        $response = $this->client->getUser(3);
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchItemEmpty.txt');
-        $response = $this->client->fetchItem('articles', 3);
-        $this->assertNull($response);
+        $response = $this->client->getUser(3);
+        $this->assertNull($response->getRawData());
     }
 
     public function testFetchColumns()
     {
         $this->mockResponse('fetchColumns.txt');
-        $response = $this->client->fetchColumns('articles');
-        $this->assertInternalType('array', $response);
+        $response = $this->client->getColumns('articles');
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
 
         $this->mockResponse('fetchColumnsEmpty.txt');
-        $response = $this->client->fetchColumns('articles');
-        $this->assertInternalType('array', $response);
+        $response = $this->client->getColumns('articles');
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
     }
 
     public function testFetchColumnInformation()
     {
         $this->mockResponse('fetchColumnInfo.txt');
-        $response = $this->client->fetchColumnInfo('articles', 'title');
+        $response = $this->client->getColumn('articles', 'title');
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchColumnInfoEmpty.txt');
-        $response = $this->client->fetchColumnInfo('articles', 'name');
-        $this->assertInternalType('object', $response);
-        $this->assertObjectHasAttribute('message', $response);
+        $response = $this->client->getColumn('articles', 'name');
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
+        $this->assertArrayHasKey('message', $response->getRawData());
+        $this->assertInternalType('array', $response->getRawData());
     }
 
     public function testFetchGroups()
     {
         $this->mockResponse('fetchGroups.txt');
-        $response = $this->client->fetchGroups();
-        $this->assertInternalType('object', $response);
-        $this->assertObjectHasAttribute('total', $response);
-        $this->assertObjectHasAttribute('rows', $response);
+        $response = $this->client->getGroups();
+        $this->assertInstanceOf('\Directus\SDK\Response\EntryCollection', $response);
+        $this->assertSame(1, $response->count());
 
         $this->mockResponse('fetchGroupsEmpty.txt');
-        $response = $this->client->fetchGroups();
-        $this->assertInternalType('object', $response);
-        $this->assertObjectHasAttribute('total', $response);
-        $this->assertObjectHasAttribute('rows', $response);
+        $response = $this->client->getGroups();
+        $this->assertInstanceOf('\Directus\SDK\Response\EntryCollection', $response);
+        $this->assertSame(0, $response->count());
     }
 
     public function testFetchGroupInformation()
     {
         $this->mockResponse('fetchGroupInfo.txt');
-        $response = $this->client->fetchGroupInfo(1);
+        $response = $this->client->getGroup(1);
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchGroupInfoEmpty.txt');
-        $response = $this->client->fetchGroupInfo(2);
-        $this->assertFalse($response);
+        $response = $this->client->getGroup(2);
+        $this->assertFalse($response->getRawData());
     }
 
     public function testFetchGroupPrivileges()
     {
         $this->mockResponse('fetchGroupPrivileges.txt');
-        $response = $this->client->fetchGroupPrivileges(1);
-        $this->assertInternalType('array', $response);
-        $this->assertInternalType('object', $response[0]);
-        $this->assertObjectHasAttribute('allow_view', $response[0]);
+        $response = $this->client->getGroupPrivileges(1);
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response[0]);
+        $this->assertArrayHasKey('allow_view', $response[0]->getRawData());
 
         $this->mockResponse('fetchGroupPrivilegesEmpty.txt');
-        $response = $this->client->fetchGroupPrivileges(30);
-        $this->assertInternalType('array', $response);
-        $this->assertInternalType('object', $response[0]);
-        $this->assertObjectNotHasAttribute('allow_view', $response[0]);
+        $response = $this->client->getGroupPrivileges(30);
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response);
+        $this->assertInstanceOf('\Directus\SDK\Response\Entry', $response[0]);
+        $this->assertArrayNotHasKey('allow_view', $response[0]->getRawData());
     }
 
     public function testFetchFiles()
     {
         $this->mockResponse('fetchFiles.txt');
-        $response = $this->client->fetchFiles();
-        $this->assertInternalType('object', $response);
-        $this->assertObjectHasAttribute('rows', $response);
-        $this->assertInternalType('array', $response->rows);
+        $response = $this->client->getFiles();
+        $this->assertInstanceOf('\Directus\SDK\Response\EntryCollection', $response);
 
         $this->mockResponse('fetchFilesEmpty.txt');
-        $response = $this->client->fetchFiles();
-        $this->assertInternalType('object', $response);
-        $this->assertObjectHasAttribute('rows', $response);
-        $this->assertInternalType('array', $response->rows);
+        $response = $this->client->getFiles();
+        $this->assertInstanceOf('\Directus\SDK\Response\EntryCollection', $response);
     }
 
     public function testFetchFileInformation()
     {
         $this->mockResponse('fetchFileInformation.txt');
-        $response = $this->client->fetchFileInfo(1);
+        $response = $this->client->getFile(1);
         $this->assertInternalType('object', $response);
 
         $this->mockResponse('fetchFileInformationEmpty.txt');
-        $response = $this->client->fetchFileInfo(2);
-        $this->assertNull($response);
+        $response = $this->client->getFile(2);
+        $this->assertNull($response->getRawData());
     }
 
     public function testFetchSettings()
     {
         $this->mockResponse('fetchSettings.txt');
-        $response = $this->client->fetchSettings();
+        $response = $this->client->getSettings();
         $this->assertInternalType('object', $response);
     }
 
     public function testFetchSettingCollection()
     {
         $this->mockResponse('fetchSettingsCollection.txt');
-        $response = $this->client->fetchSettingCollection('global');
+        $response = $this->client->getSettingsByCollection('global');
         $this->assertInternalType('object', $response);
     }
 

@@ -1,43 +1,62 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\SDK;
 
+use Directus\SDK\Response\Entry;
+use Directus\SDK\Response\EntryCollection;
+
+/**
+ * Requests Interface
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 interface RequestsInterface
 {
     /**
-     * Fetch list of tables
+     * Gets list of all tables
      *
-     * @return array
+     * @param array $params
+     *
+     * @return EntryCollection
      */
-    public function fetchTables();
+    public function getTables(array $params = []);
 
     /**
-     * Fetch Information of a given table
+     * Gets the details of the given table
      *
      * @param $tableName
      *
-     * @return object
+     * @return Entry
      */
-    public function fetchTableInfo($tableName);
+    public function getTable($tableName);
 
     /**
-     * Fetch columns of a given table
+     * Gets columns of a given table
      *
      * @param $tableName
+     * @param $params
      *
-     * @return array
+     * @return EntryCollection
      */
-    public function fetchColumns($tableName);
+    public function getColumns($tableName, array $params = []);
 
     /**
-     * Fetch details of a given table's column
+     * Gets the details of a given table's column
      *
      * @param $tableName
      * @param $columnName
      *
-     * @return array
+     * @return Entry
      */
-    public function fetchColumnInfo($tableName, $columnName);
+    public function getColumn($tableName, $columnName);
 
     /**
      * Fetch Items from a given table
@@ -45,9 +64,9 @@ interface RequestsInterface
      * @param string $tableName
      * @param array $options
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function getEntries($tableName, array $options = []);
+    public function getItems($tableName, array $options = []);
 
     /**
      * Get an entry in a given table by the given ID
@@ -56,64 +75,356 @@ interface RequestsInterface
      * @param string $tableName
      * @param array $options
      *
-     * @return array
+     * @return Entry
      */
-    public function getEntry($id, $tableName, array $options = []);
+    public function getItem($tableName, $id, array $options = []);
 
     /**
-     * Fetch List of User groups
+     * Gets the list of users
      *
-     * @return object
+     * @param array $params
+     *
+     * @return EntryCollection
      */
-    public function fetchGroups();
+    public function getUsers(array $params = []);
 
     /**
-     * Fetch the information of a given user group
+     * Gets a user by the given id
+     *
+     * @param $id
+     * @param array $params
+     *
+     * @return Entry
+     */
+    public function getUser($id, array $params = []);
+
+    /**
+     * Gets a list of User groups
+     *
+     * @return EntryCollection
+     */
+    public function getGroups();
+
+    /**
+     * Gets the information of a given user group
      *
      * @param $groupID
      *
-     * @return object
+     * @return Entry
      */
-    public function fetchGroupInfo($groupID);
+    public function getGroup($groupID);
 
     /**
-     * Fetch a given group privileges
+     * Get a given group privileges
      *
      * @param $groupID
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function fetchGroupPrivileges($groupID);
+    public function getGroupPrivileges($groupID);
 
     /**
-     * Fetch list of files
+     * Gets a list fo files
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function fetchFiles();
+    public function getFiles();
 
     /**
-     * Fetch the information of a given file
+     * Gets the information of a given file ID
      *
      * @param $fileID
      *
-     * @return mixed
+     * @return Entry
      */
-    public function fetchFileInfo($fileID);
+    public function getFile($fileID);
 
     /**
-     * Fetch all settings
+     * Gets all settings
      *
      * @return object
      */
-    public function fetchSettings();
+    public function getSettings();
 
     /**
-     * Fetch all settings in a given collection name
+     * Gets all settings in a given collection name
      *
      * @param $collectionName
      *
-     * @return object
+     * @return EntryCollection
      */
-    public function fetchSettingCollection($collectionName);
+    public function getSettingsByCollection($collectionName);
+
+    /**
+     * Updates settings in the given collection
+     *
+     * @param $collection
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function updateSettings($collection, array $data);
+
+    /**
+     * Gets messages with the given ID
+     *
+     * @param $id
+     *
+     * @return Entry
+     */
+    public function getMessage($id);
+
+    /**
+     * Gets all messages from the given user ID
+     *
+     * @param $userId
+     *
+     * @return EntryCollection
+     */
+    public function getMessages($userId = null);
+
+    /**
+     * Create a new item in the given table name
+     *
+     * @param $tableName
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createItem($tableName, array $data);
+
+    /**
+     * Update the item of the given table and id
+     *
+     * @param $tableName
+     * @param $id
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function updateItem($tableName, $id, array $data);
+
+    /**
+     * Deletes the given item id(s)
+     *
+     * @param $tableName
+     * @param string|array|Entry|EntryCollection $ids
+     *
+     * @return int
+     */
+    public function deleteItem($tableName, $ids);
+
+    /**
+     * Creates a new user
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createUser(array $data);
+
+    /**
+     * Updates the given user id
+     *
+     * @param $id
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function updateUser($id, array $data);
+
+    /**
+     * Deletes the given user id(s)
+     *
+     * @param string|array|Entry|EntryCollection $ids
+     *
+     * @return int
+     */
+    public function deleteUser($ids);
+
+    /**
+     * Creates a new file
+     *
+     * @param File $file
+     *
+     * @return Entry
+     */
+    public function createFile(File $file);
+
+    /**
+     * Updates the given file id
+     *
+     * @param $id
+     * @param array|File $data
+     *
+     * @return mixed
+     */
+    public function updateFile($id, $data);
+
+    /**
+     * Deletes the given file id(s)
+     *
+     * @param string|array|Entry|EntryCollection $ids
+     *
+     * @return int
+     */
+    public function deleteFile($ids);
+
+    /**
+     * Creates a new Bookmark
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createBookmark($data);
+
+    /**
+     * Gets a Bookmark with the given id
+     *
+     * @param int $id
+     *
+     * @return Entry
+     */
+    public function getBookmark($id);
+
+    /**
+     * Gets a Bookmarks
+     *
+     * @param int $userId
+     *
+     * @return Entry
+     */
+    public function getBookmarks($userId = null);
+
+    /**
+     * Creates a new Table preferences
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createPreferences($data);
+
+    /**
+     * Creates a new Column
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createColumn($data);
+
+    /**
+     * Creates a new group
+     *
+     * @param $data
+     *
+     * @return Entry
+     */
+    public function createGroup(array $data);
+
+    /**
+     * Creates new message
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createMessage(array $data);
+
+    /**
+     * Sends a new message
+     *
+     * Alias of createMessage
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function sendMessage(array $data);
+
+    /**
+     * Creates a new privileges/permissions
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createPrivileges(array $data);
+
+    /**
+     * Creates
+     *
+     * @param $name
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createTable($name, array $data = []);
+
+    /**
+     * Creates/Updates column ui options
+     *
+     * @param array $data
+     *
+     * @return Entry
+     */
+    public function createColumnUIOptions(array $data);
+
+    /**
+     * Gets preferences
+     *
+     * @param $table
+     * @param $user
+     *
+     * @return Entry
+     */
+    public function getPreferences($table, $user);
+
+    /**
+     * Deletes a bookmark
+     *
+     * @param $id
+     *
+     * @return Entry
+     */
+    public function deleteBookmark($id);
+
+    /**
+     * Deletes a column
+     *
+     * @param $name
+     * @param $table
+     *
+     * @return Entry
+     */
+    public function deleteColumn($name, $table);
+
+    /**
+     * Deletes a group
+     *
+     * @param $id
+     *
+     * @return Entry
+     */
+    public function deleteGroup($id);
+
+    /**
+     * Deletes a table
+     *
+     * @param $name
+     *
+     * @return Entry
+     */
+    public function deleteTable($name);
+
+    /**
+     * Gets activity records
+     *
+     * @param array $params
+     *
+     * @return Entry
+     */
+    public function getActivity(array $params = []);
 }
