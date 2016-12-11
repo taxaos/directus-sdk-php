@@ -125,7 +125,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $endpoint = $this->client->buildPath($client::SETTING_LIST_ENDPOINT);
         $this->assertSame($endpoint, 'settings');
 
-        $endpoint = $this->client->buildPath($client::SETTING_COLLECTION_ENDPOINT, 'global');
+        $endpoint = $this->client->buildPath($client::SETTING_COLLECTION_GET_ENDPOINT, 'global');
         $this->assertSame($endpoint, 'settings/global');
     }
 
