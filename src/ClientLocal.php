@@ -678,9 +678,6 @@ class ClientLocal extends AbstractClient
         $connection = $this->container->get('connection');
         $acl = $this->container->get('acl');
         $tableGateway = new DirectusActivityTableGateway($connection, $acl);
-        if (!ArrayUtils::has($params, 'filters.datetime')) {
-            $params['filters']['datetime'] = ['>=' => DateUtils::daysAgo(30)];
-        }
 
         $data = $tableGateway->fetchFeed($params);
 

@@ -480,10 +480,6 @@ class ClientRemote extends BaseClientRemote
      */
     public function getActivity(array $params = [])
     {
-        if (!ArrayUtils::has($params, 'filters.datetime')) {
-            $params['filters']['datetime'] = ['>=' => DateUtils::daysAgo(30)];
-        }
-
         $path = $this->buildPath(static::ACTIVITY_GET_ENDPOINT);
 
         return $this->performRequest('GET', $path, [
