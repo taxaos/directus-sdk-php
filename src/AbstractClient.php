@@ -30,7 +30,13 @@ abstract class AbstractClient implements RequestsInterface
         return $this->container;
     }
 
-    // @TODO: move to a builder class
+    /**
+     * Creates a response object
+     *
+     * @param $data
+     *
+     * @return Entry|EntryCollection
+     */
     protected function createResponseFromData($data)
     {
         if (isset($data['rows']) || (isset($data['data']) && ArrayUtils::isNumericKeys($data['data']))) {
