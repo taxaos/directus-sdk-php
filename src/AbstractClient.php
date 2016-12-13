@@ -35,7 +35,7 @@ abstract class AbstractClient implements RequestsInterface
      *
      * @param $data
      *
-     * @return Entry|EntryCollection
+     * @return \Directus\SDK\Response\EntryCollection|\Directus\SDK\Response\Entry
      */
     protected function createResponseFromData($data)
     {
