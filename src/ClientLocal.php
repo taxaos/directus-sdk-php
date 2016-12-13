@@ -22,7 +22,6 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
-use Directus\Util\DateUtils;
 use Directus\Util\SchemaUtils;
 
 /**

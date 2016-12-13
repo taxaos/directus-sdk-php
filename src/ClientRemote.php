@@ -9,8 +9,8 @@
  */
 
 namespace Directus\SDK;
+
 use Directus\Util\ArrayUtils;
-use Directus\Util\DateUtils;
 
 /**
  * Client Remote
