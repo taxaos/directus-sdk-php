@@ -242,6 +242,17 @@ abstract class BaseClientRemote extends AbstractClient
         return new HTTPClient(array('base_url' => rtrim($this->baseEndpoint, '/') . '/'));
     }
 
+    /**
+     * Perform a HTTP Request
+     *
+     * @param $method
+     * @param $path
+     * @param array $params
+     *
+     * @return Response\Entry|Response\EntryCollection
+     *
+     * @throws UnauthorizedRequestException
+     */
     public function performRequest($method, $path, array $params = [])
     {
         $request = $this->buildRequest($method, $path, $params);
