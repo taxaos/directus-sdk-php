@@ -11,6 +11,8 @@
 namespace Directus\SDK;
 
 use Directus\SDK\Exception\UnauthorizedRequestException;
+use Directus\SDK\Response\Entry;
+use Directus\SDK\Response\EntryCollection;
 use Directus\Util\ArrayUtils;
 use GuzzleHttp\Client as HTTPClient;
 use GuzzleHttp\Exception\ClientException;
@@ -249,7 +251,7 @@ abstract class BaseClientRemote extends AbstractClient
      * @param $path
      * @param array $params
      *
-     * @return Response\Entry|Response\EntryCollection
+     * @return Entry|EntryCollection
      *
      * @throws UnauthorizedRequestException
      */
