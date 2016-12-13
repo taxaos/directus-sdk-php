@@ -24,6 +24,18 @@ class EntryTest extends \PHPUnit_Framework_TestCase
         $this->entry = new \Directus\SDK\Response\Entry($this->data);
     }
 
+    public function testEntry11()
+    {
+        $data = [
+            'meta' => ['table' => 'users'],
+            'data' => $this->data
+        ];
+
+        $entry = new \Directus\SDK\Response\Entry($data);
+        $this->assertEquals($this->data, $entry->getData());
+        $this->assertNotNull($entry->getMetaData());
+    }
+
     public function testEntry()
     {
         $entry = $this->entry;
