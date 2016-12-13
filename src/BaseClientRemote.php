@@ -298,7 +298,7 @@ abstract class BaseClientRemote extends AbstractClient
      * Build a endpoint path based on a format
      *
      * @param string $pathFormat
-     * @param array $variables
+     * @param string|array $variables
      *
      * @return string
      */
