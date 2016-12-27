@@ -23,6 +23,7 @@ use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
+use Zend\Db\Sql\Predicate\In;
 
 /**
  * Client Local
@@ -284,7 +285,7 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function deleteItem($tableName, $ids)
+    public function deleteItem($tableName, $ids, $hard = false)
     {
         // @TODO: Accept EntryCollection and Entry
         $tableGateway = $this->getTableGateway($tableName);
@@ -293,9 +294,13 @@ class ClientLocal extends AbstractClient
             $ids = [$ids];
         }
 
-        return $tableGateway->delete(function($delete) use ($ids) {
-            return $delete->where->in('id', $ids);
-        });
+        if ($hard === true) {
+            return $tableGateway->delete(function($delete) use ($ids) {
+                return $delete->where->in('id', $ids);
+            });
+        }
+
+        return $tableGateway->update(['active' => 0], new In('id', $ids));
     }
 
     /**
@@ -317,9 +322,9 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function deleteUser($ids)
+    public function deleteUser($ids, $hard = false)
     {
-        return $this->deleteItem('directus_users', $ids);
+        return $this->deleteItem('directus_users', $ids, $hard);
     }
 
     /**
@@ -347,9 +352,9 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritDoc
      */
-    public function deleteFile($ids)
+    public function deleteFile($ids, $hard = false)
     {
-        return $this->deleteItem('directus_files', $ids);
+        return $this->deleteItem('directus_files', $ids, $hard);
     }
 
     public function createPreferences($data)
@@ -617,9 +622,9 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritdoc
      */
-    public function deleteBookmark($id)
+    public function deleteBookmark($id, $hard = false)
     {
-        return $this->deleteItem('directus_bookmarks', $id);
+        return $this->deleteItem('directus_bookmarks', $id, $hard);
     }
 
     /**
@@ -646,9 +651,9 @@ class ClientLocal extends AbstractClient
     /**
      * @inheritdoc
      */
-    public function deleteGroup($id)
+    public function deleteGroup($id, $hard = false)
     {
-        return $this->deleteItem('directus_groups', $id);
+        return $this->deleteItem('directus_groups', $id, $hard);
     }
 
     /**

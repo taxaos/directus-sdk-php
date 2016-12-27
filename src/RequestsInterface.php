@@ -207,12 +207,13 @@ interface RequestsInterface
     /**
      * Deletes the given item id(s)
      *
-     * @param $tableName
+     * @param string $tableName
      * @param string|array|Entry|EntryCollection $ids
+     * @param bool $hard
      *
      * @return int
      */
-    public function deleteItem($tableName, $ids);
+    public function deleteItem($tableName, $ids, $hard = false);
 
     /**
      * Creates a new user
@@ -237,10 +238,11 @@ interface RequestsInterface
      * Deletes the given user id(s)
      *
      * @param string|array|Entry|EntryCollection $ids
+     * @param bool $hard
      *
      * @return int
      */
-    public function deleteUser($ids);
+    public function deleteUser($ids, $hard = false);
 
     /**
      * Creates a new file
@@ -265,10 +267,11 @@ interface RequestsInterface
      * Deletes the given file id(s)
      *
      * @param string|array|Entry|EntryCollection $ids
+     * @param bool $hard
      *
      * @return int
      */
-    public function deleteFile($ids);
+    public function deleteFile($ids, $hard = false);
 
     /**
      * Creates a new Bookmark
@@ -386,10 +389,11 @@ interface RequestsInterface
      * Deletes a bookmark
      *
      * @param $id
+     * @param bool $hard
      *
      * @return Entry
      */
-    public function deleteBookmark($id);
+    public function deleteBookmark($id, $hard = false);
 
     /**
      * Deletes a column
@@ -405,10 +409,11 @@ interface RequestsInterface
      * Deletes a group
      *
      * @param $id
+     * @param bool $hard
      *
      * @return Entry
      */
-    public function deleteGroup($id);
+    public function deleteGroup($id, $hard = false);
 
     /**
      * Deletes a table

@@ -218,11 +218,17 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteItem($tableName, $id)
+    public function deleteItem($tableName, $id, $hard = false)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_DELETE_ENDPOINT, [$tableName, $id]);
 
-        return $this->performRequest('DELETE', $path);
+        if ($hard === true) {
+            return $this->performRequest('DELETE', $path);
+        }
+
+        return $this->performRequest('PATCH', $path, [
+            'body' => ['active' => 0]
+        ]);
     }
 
     /**
@@ -244,9 +250,9 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteUser($ids)
+    public function deleteUser($ids, $hard = false)
     {
-        return $this->deleteItem('directus_users', $ids);
+        return $this->deleteItem('directus_users', $ids, $hard);
     }
 
     /**
@@ -278,9 +284,9 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteFile($id)
+    public function deleteFile($id, $hard = false)
     {
-        return $this->deleteItem('directus_files', $id);
+        return $this->deleteItem('directus_files', $id, $hard);
     }
 
     public function createPreferences($data)
@@ -442,9 +448,9 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteBookmark($id)
+    public function deleteBookmark($id, $hard = false)
     {
-        return $this->deleteItem('directus_bookmarks', $id);
+        return $this->deleteItem('directus_bookmarks', $id, $hard);
     }
 
     /**
@@ -460,9 +466,9 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function deleteGroup($id)
+    public function deleteGroup($id, $hard = false)
     {
-        return $this->deleteItem('directus_groups', $id);
+        return $this->deleteItem('directus_groups', $id, $hard);
     }
 
     /**
