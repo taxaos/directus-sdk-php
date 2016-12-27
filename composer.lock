@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "741d552b124e0168e116f63d53decd03",
+    "content-hash": "d33f652ec2748b6342ad438d3216e954",
     "packages": [
         {
             "name": "directus/collection",
-            "version": "dev-d64",
+            "version": "dev-version/6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-collection.git",
-                "reference": "0f54b2dd89c939cae9138d4bc0acf9b07da9a18a"
+                "reference": "9211a9bb44a0d21eaecec897e7bfc146dbf05254"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-collection/zipball/0f54b2dd89c939cae9138d4bc0acf9b07da9a18a",
-                "reference": "0f54b2dd89c939cae9138d4bc0acf9b07da9a18a",
+                "url": "https://api.github.com/repos/directus/directus-collection/zipball/9211a9bb44a0d21eaecec897e7bfc146dbf05254",
+                "reference": "9211a9bb44a0d21eaecec897e7bfc146dbf05254",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-d64": "0.9.x-dev"
+                    "dev-version/6.4": "0.9.x-dev"
                 }
             },
             "autoload": {
@@ -43,7 +43,7 @@
                 "collection",
                 "directus"
             ],
-            "time": "2016-11-15 02:23:54"
+            "time": "2016-12-26 09:16:26"
         },
         {
             "name": "directus/database",
@@ -51,16 +51,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "b734f6501a14c799fb5d9737626ca7ac5bd037b4"
+                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/b734f6501a14c799fb5d9737626ca7ac5bd037b4",
-                "reference": "b734f6501a14c799fb5d9737626ca7ac5bd037b4",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
+                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
                 "shasum": ""
             },
             "require": {
-                "directus/collection": "0.9.*",
+                "directus/collection": "0.9.*@dev",
                 "php": ">=5.4.0",
                 "zendframework/zend-db": "2.8.*"
             },
@@ -87,7 +87,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-08 18:41:01"
+            "time": "2016-12-26 11:05:09"
         },
         {
             "name": "directus/filesystem",
@@ -491,23 +491,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "2f4b5955f3942870e01ce2492f7fde6dbe3e11cd"
+                "reference": "2760f3898b7e931aa71153852dcd48a75c9b95db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/2f4b5955f3942870e01ce2492f7fde6dbe3e11cd",
-                "reference": "2f4b5955f3942870e01ce2492f7fde6dbe3e11cd",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/2760f3898b7e931aa71153852dcd48a75c9b95db",
+                "reference": "2760f3898b7e931aa71153852dcd48a75c9b95db",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "React\\Promise\\": "src/"
@@ -527,7 +522,11 @@
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2016-11-23 18:42:25"
+            "keywords": [
+                "promise",
+                "promises"
+            ],
+            "time": "2016-12-22 14:09:01"
         },
         {
             "name": "zendframework/zend-db",
@@ -588,31 +587,31 @@
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "dev-develop",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stdlib.git",
-                "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8"
+                "reference": "8bafa58574204bdff03c275d1d618aaa601588ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/16818ed8ee2a92a503c43883dcb6263fe6283ee8",
-                "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/8bafa58574204bdff03c275d1d618aaa601588ae",
+                "reference": "8bafa58574204bdff03c275d1d618aaa601588ae",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0"
+                "php": "^5.5 || ^7.0"
             },
             "require-dev": {
                 "athletic/athletic": "~0.1",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "^2.6.2"
+                "fabpot/php-cs-fixer": "1.7.*",
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.1-dev",
-                    "dev-develop": "3.2-dev"
+                    "dev-master": "3.0-dev",
+                    "dev-develop": "3.1-dev"
                 }
             },
             "autoload": {
@@ -629,7 +628,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2016-09-13 14:40:02"
+            "time": "2016-04-12T21:19:36+00:00"
         }
     ],
     "packages-dev": [
@@ -692,7 +691,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-09-02 10:13:14"
+            "time": "2014-09-02T10:13:14+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -739,7 +738,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2016-10-03 07:40:28"
+            "time": "2016-10-03T07:40:28+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -780,7 +779,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -824,7 +823,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2016-05-12 18:03:57"
+            "time": "2016-05-12T18:03:57+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -874,7 +873,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2014-03-03 05:10:30"
+            "time": "2014-03-03T05:10:30+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -947,7 +946,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-10-17 09:04:17"
+            "time": "2014-10-17T09:04:17+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1004,7 +1003,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-02-16 12:43:56"
+            "time": "2014-02-16T12:43:56+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1053,7 +1052,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-14 16:15:57"
+            "time": "2016-11-14T16:15:57+00:00"
         }
     ],
     "aliases": [],
@@ -1062,7 +1061,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.0"
+        "php": ">=5.5.0"
     },
     "platform-dev": []
 }
