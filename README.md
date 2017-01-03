@@ -54,6 +54,9 @@ $config = [
         'username' => 'root',
         'password' => '123',
         'database' => 'directus_db',
+        // Optional
+        // 'port' => 3306,
+        // 'charset' => 'utf8'
     ],
     'filesystem' => [
         'root' => '/path/to/directus/storage/uploads'
