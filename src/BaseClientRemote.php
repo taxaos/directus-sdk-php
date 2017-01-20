@@ -16,6 +16,9 @@ use Directus\SDK\Response\EntryCollection;
 use Directus\Util\ArrayUtils;
 use GuzzleHttp\Client as HTTPClient;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\UriResolver;
 
 /**
  * Abstract Base Client Remote
@@ -149,7 +152,7 @@ abstract class BaseClientRemote extends AbstractClient
         }
 
         $this->apiVersion = isset($options['version']) ? $options['version'] : 1;
-        $this->baseEndpoint .= '/' . $this->getAPIVersion();
+        $this->baseEndpoint .= '/' . $this->getAPIVersion() . '/';
 
         $this->setHTTPClient($this->getDefaultHTTPClient());
     }
@@ -241,7 +244,21 @@ abstract class BaseClientRemote extends AbstractClient
      */
     public function getDefaultHTTPClient()
     {
-        return new HTTPClient(array('base_url' => rtrim($this->baseEndpoint, '/') . '/'));
+        $baseUrlAttr = $this->isPsr7Version() ? 'base_uri' : 'base_url';
+
+        return new HTTPClient([
+            $baseUrlAttr => rtrim($this->baseEndpoint, '/') . '/'
+        ]);
+    }
+
+    /**
+     * Checks whether guzzle 6 is used
+     *
+     * @return bool
+     */
+    public function isPsr7Version()
+    {
+        return (bool) version_compare(HTTPClient::VERSION, '6.0.0', '>=');
     }
 
     /**
@@ -262,15 +279,23 @@ abstract class BaseClientRemote extends AbstractClient
         try {
             $response = $this->httpClient->send($request);
             $content = json_decode($response->getBody()->getContents(), true);
-            return $this->createResponseFromData($content);
         } catch (ClientException $ex) {
             if ($ex->getResponse()->getStatusCode() == 401) {
-                $message = sprintf('Unauthorized %s Request to %s', $request->getMethod(), $request->getUrl());
+                if ($this->isPsr7Version()) {
+                    $uri = $request->getUri();
+                } else {
+                    $uri = $request->getUrl();
+                }
+
+                $message = sprintf('Unauthorized %s Request to %s', $request->getMethod(), $uri);
+
                 throw new UnauthorizedRequestException($message);
             }
 
             throw $ex;
         }
+
+        return $this->createResponseFromData($content);
     }
 
     /**
@@ -280,27 +305,75 @@ abstract class BaseClientRemote extends AbstractClient
      * @param $path
      * @param $params
      *
-     * @return \GuzzleHttp\Message\Request
+     * @return \GuzzleHttp\Message\Request|Request
      */
     public function buildRequest($method, $path, array $params = [])
     {
-        $body = ArrayUtils::get($params, 'body', []);
-        $query = ArrayUtils::get($params, 'query', []);
-
-        $options = [
-            'auth' => [$this->accessToken, '']
-        ];
+        $body = ArrayUtils::get($params, 'body', null);
+        $query = ArrayUtils::get($params, 'query', null);
+        $options = [];
 
         if (in_array($method, ['POST', 'PUT']) && $body) {
             $options['body'] = $body;
         }
 
-        $request = $this->httpClient->createRequest($method, $path, $options);
-
         if ($query) {
-            $q = $request->getQuery();
-            foreach($query as $key => $value) {
-                $q->set($key, $value);
+            $options['query'] = $query;
+        }
+
+        return $this->createRequest($method, $path, $options);
+    }
+
+    /**
+     * Creates a request for 5.x or 6.x guzzle version
+     *
+     * @param $method
+     * @param $path
+     * @param $options
+     *
+     * @return \GuzzleHttp\Message\Request|\GuzzleHttp\Message\RequestInterface|Request
+     */
+    public function createRequest($method, $path, $options)
+    {
+        if ($this->isPsr7Version()) {
+            $headers = [
+                'Content-Type'  => 'application/json',
+                'Authorization' => 'Bearer ' . $this->getAccessToken(),
+            ];
+
+            $body = ArrayUtils::get($options, 'body', null);
+            $uri = UriResolver::resolve(new Uri($this->getBaseEndpoint(), '/'), new Uri($path));
+
+            if ($body) {
+                $body = json_encode($body);
+            }
+
+            if (ArrayUtils::has($options, 'query')) {
+                $query = $options['query'];
+
+                if (is_array($query)) {
+                    $query = http_build_query($query, null, '&', PHP_QUERY_RFC3986);
+                }
+
+                if (!is_string($query)) {
+                    throw new \InvalidArgumentException('query must be a string or array');
+                }
+
+                $uri = $uri->withQuery($query);
+            }
+
+            $request = new Request($method, $uri, $headers, $body);
+        } else {
+            $options['auth'] = [$this->accessToken, ''];
+
+            $request = $this->httpClient->createRequest($method, $path, $options);
+
+            $query = ArrayUtils::get($options, 'query');
+            if ($query) {
+                $q = $request->getQuery();
+                foreach($query as $key => $value) {
+                    $q->set($key, $value);
+                }
             }
         }
 

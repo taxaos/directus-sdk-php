@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d33f652ec2748b6342ad438d3216e954",
+    "content-hash": "ffc9b5bc5218e505fa381f221b9e652c",
     "packages": [
         {
             "name": "directus/collection",
@@ -47,22 +47,22 @@
         },
         {
             "name": "directus/database",
-            "version": "dev-version/6.4",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6"
+                "reference": "a5c851c827a0606226c8493d708110c7ec28d230"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
-                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/a5c851c827a0606226c8493d708110c7ec28d230",
+                "reference": "a5c851c827a0606226c8493d708110c7ec28d230",
                 "shasum": ""
             },
             "require": {
                 "directus/collection": "0.9.*@dev",
                 "php": ">=5.4.0",
-                "zendframework/zend-db": "2.8.*"
+                "zendframework/zend-db": "dev-directus"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7.0"
@@ -76,7 +76,10 @@
             "autoload": {
                 "psr-4": {
                     "Directus\\Database\\": ""
-                }
+                },
+                "files": [
+                    "functions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -87,7 +90,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-26 11:05:09"
+            "time": "2017-01-19T19:03:09+00:00"
         },
         {
             "name": "directus/filesystem",
@@ -255,17 +258,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "70f1fa53b71c4647bf2762c09068a95f77e12fb8"
+                "reference": "fc66319d0027509c3a83166314dfc813fa25ffcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/70f1fa53b71c4647bf2762c09068a95f77e12fb8",
-                "reference": "70f1fa53b71c4647bf2762c09068a95f77e12fb8",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/fc66319d0027509c3a83166314dfc813fa25ffcc",
+                "reference": "fc66319d0027509c3a83166314dfc813fa25ffcc",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/ringphp": "^1.1",
-                "php": ">=5.4.0"
+                "php": ">=5.4.0",
+                "react/promise": "^2.2"
             },
             "require-dev": {
                 "ext-curl": "*",
@@ -299,7 +303,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2016-07-15 19:28:39"
+            "time": "2017-01-05 06:25:03"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -307,12 +311,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/RingPHP.git",
-                "reference": "9465032ac5d6beaa55f10923403e6e1c36018d9c"
+                "reference": "4c8fe4c48a0fb7cc5e41ef529e43fecd6da4d539"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/9465032ac5d6beaa55f10923403e6e1c36018d9c",
-                "reference": "9465032ac5d6beaa55f10923403e6e1c36018d9c",
+                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/4c8fe4c48a0fb7cc5e41ef529e43fecd6da4d539",
+                "reference": "4c8fe4c48a0fb7cc5e41ef529e43fecd6da4d539",
                 "shasum": ""
             },
             "require": {
@@ -350,7 +354,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-05-21 17:23:02"
+            "time": "2017-01-13 20:44:38"
         },
         {
             "name": "guzzlehttp/streams",
@@ -408,12 +412,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369"
+                "reference": "ca31a2db2f597c877840666b394e2e6a8a648ef8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/0165294685dc83e521a46e0df2ff6b8bd4df4369",
-                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/ca31a2db2f597c877840666b394e2e6a8a648ef8",
+                "reference": "ca31a2db2f597c877840666b394e2e6a8a648ef8",
                 "shasum": ""
             },
             "require": {
@@ -483,7 +487,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-11-23 11:39:43"
+            "time": "2017-01-18 13:36:15"
         },
         {
             "name": "react/promise",
@@ -530,17 +534,11 @@
         },
         {
             "name": "zendframework/zend-db",
-            "version": "dev-master",
+            "version": "dev-directus",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-db.git",
-                "reference": "ae46299099c724a96fd088ae05a0b64e3748a808"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-db/zipball/ae46299099c724a96fd088ae05a0b64e3748a808",
-                "reference": "ae46299099c724a96fd088ae05a0b64e3748a808",
-                "shasum": ""
+                "url": "https://github.com/wellingguzman/zend-db",
+                "reference": "f80a35edeaa4936b14cea5fe336868d8407fee3e"
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -574,16 +572,21 @@
                     "Zend\\Db\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ZendTest\\Db\\": "test/"
+                }
+            },
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
             "homepage": "https://github.com/zendframework/zend-db",
             "keywords": [
                 "db",
                 "zf2"
             ],
-            "time": "2016-08-09 19:32:50"
+            "time": "2017-01-19 19:47:42"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -1011,12 +1014,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "befb26a3713c97af90d25dd12e75621ef14d91ff"
+                "reference": "dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/befb26a3713c97af90d25dd12e75621ef14d91ff",
-                "reference": "befb26a3713c97af90d25dd12e75621ef14d91ff",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2",
+                "reference": "dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2",
                 "shasum": ""
             },
             "require": {
@@ -1052,7 +1055,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-14T16:15:57+00:00"
+            "time": "2017-01-03T13:49:52+00:00"
         }
     ],
     "aliases": [],
