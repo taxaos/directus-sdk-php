@@ -18,18 +18,46 @@ PHP version 5.4 or greater.
 
 ### Via Composer
 
-You can install the SDK using [Composer](http://getcomposer.org) by running the command below:
+You can install the SDK using [Composer](http://getcomposer.org).
 
-``` bash
-$ composer require directus/sdk
-```
+Add `directus/sdk` to composer `require` list.
 
-Or add `directus/sdk` to composer `require` list.
 ```json
 {
   "require": {
-    "directus/sdk": "0.9.*"
+    "directus/sdk": "0.1.*"
   }
+}
+```
+
+As we are trying to get zend-db to [support spaces and dashes in columns](https://github.com/zendframework/zend-db/issues/208) officially, the SDK require to use a forked zend-db that supports it.
+
+Add these lines into your `composer.json`
+
+```
+"minimum-stability": "dev",
+"repositories": [
+  {
+    "type": "git",
+    "url": "https://github.com/wellingguzman/zend-db"
+  }
+]
+```
+
+The result will look like this:
+
+```json
+{
+	"require": {
+		"directus/sdk": "0.1.*"
+	},
+  "minimum-stability": "dev",
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/wellingguzman/zend-db"
+		}
+	]
 }
 ```
 
