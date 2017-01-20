@@ -32,7 +32,7 @@ Add `directus/sdk` to composer `require` list.
 
 As we are trying to get zend-db to [support spaces and dashes in columns](https://github.com/zendframework/zend-db/issues/208) officially, the SDK require to use a forked zend-db that supports it.
 
-Add these lines into your `composer.json`
+Add these lines into your `composer.json`:
 
 ```
 "minimum-stability": "dev",
@@ -52,11 +52,11 @@ The result will look like this:
 		"directus/sdk": "0.1.*"
 	},
   "minimum-stability": "dev",
-	"repositories": [
-		{
-			"type": "git",
-			"url": "https://github.com/wellingguzman/zend-db"
-		}
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/wellingguzman/zend-db"
+    }
 	]
 }
 ```
