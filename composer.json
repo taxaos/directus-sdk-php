@@ -26,11 +26,5 @@
             "Directus\\SDK\\": "src/"
         },
         "files": ["src/helpers.php"]
-    },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/wellingguzman/zend-db"
-        }
-    ]
+    }
 }
