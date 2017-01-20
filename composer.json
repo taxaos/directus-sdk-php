@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.5.0",
-        "directus/database": "0.9.*",
+        "directus/database": "0.1.*",
         "directus/permissions": "0.9.*",
         "directus/filesystem": "0.9.*",
         "directus/hook": "0.9.*",
@@ -26,5 +26,11 @@
             "Directus\\SDK\\": "src/"
         },
         "files": ["src/helpers.php"]
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/wellingguzman/zend-db"
+        }
+    ]
 }
