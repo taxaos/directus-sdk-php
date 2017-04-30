@@ -57,7 +57,7 @@ The result will look like this:
       "type": "git",
       "url": "https://github.com/wellingguzman/zend-db"
     }
-	]
+  ]
 }
 ```
 
