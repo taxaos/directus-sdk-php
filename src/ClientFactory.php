@@ -264,39 +264,22 @@ class ClientFactory
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($payload) {
-            // $tableName, $data
-            if (func_num_args() == 2) {
-                $tableName = func_get_arg(0);
-                $data = func_get_arg(1);
-            } else {
-                $tableName = $payload->tableName;
-                $data = $payload->data;
-            }
+        $emitter->addFilter('table.insert.directus_files:before', function ($payload) {
+            unset($payload['data']);
+            $payload['user'] = 1;
 
-            if ($tableName == 'directus_files') {
-                unset($data['data']);
-                $data['user'] = 1;
-            }
-
-            return func_num_args() == 2 ? $data : $payload;
+            return $payload;
         });
 
         // Add file url and thumb url
         $config = $this->container->get('config');
         $files = $this->container->get('files');
-        $emitter->addFilter('table.select', function($payload) use ($config, $files) {
-            if (func_num_args() == 2) {
-                $result = func_get_arg(0);
-                $selectState = func_get_arg(1);
-            } else {
-                $selectState = $payload->selectState;
-                $result = $payload->result;
-            }
+        $emitter->addFilter('table.select', function ($payload) use ($config, $files) {
+            $selectState = $payload->attribute('selectState');
 
             if ($selectState['table'] == 'directus_files') {
-                $fileRows = $result->toArray();
-                foreach ($fileRows as &$row) {
+                $rows = $payload->toArray();
+                foreach ($rows as &$row) {
                     $fileURL = ArrayUtils::get($config, 'filesystem.root_url', '');
                     $thumbnailURL = ArrayUtils::get($config, 'filesystem.root_thumb_url', '');
                     $thumbnailFilenameParts = explode('.', $row['name']);
@@ -322,13 +305,8 @@ class ClientFactory
 
                     // 314551321-vimeo-220-124-true.jpg
                     // hotfix: there's not thumbnail for this file
-                    if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                    }
-
-                    if ($files->exists('thumbs/' . $thumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-                    }
+                    $row['old_thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
 
                     /*
                     $embedManager = Bootstrap::get('embedManager');
@@ -340,11 +318,10 @@ class ClientFactory
                     */
                 }
 
-                $filesArrayObject = new \ArrayObject($fileRows);
-                $result->initialize($filesArrayObject->getIterator());
+                $payload->replace($rows);
             }
 
-            return (func_num_args() == 2) ? $result : $payload;
+            return $payload;
         });
 
         return $emitter;
