@@ -54,7 +54,9 @@ class ClientFactory
     protected $defaultConfig = [
         'environment' => 'development',
         'database' => [
-            'driver' => 'pdo_mysql'
+            'driver'  => 'pdo_mysql',
+            'charset' => 'utf8',
+            'port'    => 3306
         ],
         'status' => [
             'column_name' => 'active',
