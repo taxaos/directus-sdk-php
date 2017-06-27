@@ -5,6 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.5.0",
+        "directus/config": "dev-version/6.4",
         "directus/database": "dev-version/6.4",
         "directus/permissions": "dev-version/6.4",
         "directus/filesystem": "dev-version/6.4",
