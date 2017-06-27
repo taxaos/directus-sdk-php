@@ -230,7 +230,7 @@ class ClientFactory
         static $files = null;
         if ($files == null) {
             $config = $this->container->get('config');
-            $filesystemConfig = ArrayUtils::get($config, 'filesystem', []);
+            $filesystemConfig = $config->get('filesystem', []);
             $filesystem = new Filesystem(FilesystemFactory::createAdapter($filesystemConfig));
             $settings = $this->container->get('settings');
             $emitter = $this->container->get('emitter');
@@ -283,8 +283,8 @@ class ClientFactory
             if ($selectState['table'] == 'directus_files') {
                 $rows = $payload->toArray();
                 foreach ($rows as &$row) {
-                    $fileURL = ArrayUtils::get($config, 'filesystem.root_url', '');
-                    $thumbnailURL = ArrayUtils::get($config, 'filesystem.root_thumb_url', '');
+                    $fileURL = $config->get('filesystem.root_url', '');
+                    $thumbnailURL = $config->get('filesystem.root_thumb_url', '');
                     $thumbnailFilenameParts = explode('.', $row['name']);
                     $thumbnailExtension = array_pop($thumbnailFilenameParts);
 
