@@ -10,6 +10,7 @@
 
 namespace Directus\SDK;
 
+use Directus\Config\Config;
 use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
@@ -136,7 +137,7 @@ class ClientFactory
         $this->container = $container = new Container();
 
         $options = ArrayUtils::defaults($this->defaultConfig, $options);
-        $container->set('config', $options);
+        $container->set('config', new Config($options));
 
         $dbConfig = ArrayUtils::get($options, 'database', []);
 
