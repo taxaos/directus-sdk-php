@@ -169,6 +169,7 @@ class ClientFactory
         $connection = new Connection($dbConfig);
         $connection->connect();
         $container->set('connection', $connection);
+        $container->set('zendDb', $connection);
 
         $acl = new \Directus\Permissions\Acl();
         $acl->setUserId(1);
