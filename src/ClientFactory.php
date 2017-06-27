@@ -204,7 +204,7 @@ class ClientFactory
         $container->singleton('emitter', function() {
             return $this->getEmitter();
         });
-        $container->set('settings', function(Container $container) {
+        $container->set('files_settings', function(Container $container) {
             $adapter = $container->get('connection');
             $acl = $container->get('acl');
             $Settings = new DirectusSettingsTableGateway($adapter, $acl);
@@ -213,6 +213,18 @@ class ClientFactory
                 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
             ]);
         });
+        $container->set('app.settings', function (Container $container) {
+            $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', $container->get('zendDb'));
+            $rowSet = $DirectusSettingsTableGateway->select();
+
+            $settings = [];
+            foreach ($rowSet as $setting) {
+                $settings[$setting['collection']][$setting['name']] = $setting['value'];
+            }
+
+            return $settings;
+        });
+
         $container->singleton('files', function() {
             return $this->getFiles();
         });
@@ -233,7 +245,7 @@ class ClientFactory
             $config = $this->container->get('config');
             $filesystemConfig = $config->get('filesystem', []);
             $filesystem = new Filesystem(FilesystemFactory::createAdapter($filesystemConfig));
-            $settings = $this->container->get('settings');
+            $settings = $this->container->get('files_settings');
             $emitter = $this->container->get('emitter');
             $files = new Files($filesystem, $filesystemConfig, $settings, $emitter);
         }
