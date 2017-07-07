@@ -9,6 +9,7 @@
         "directus/database": "dev-version/6.4",
         "directus/permissions": "dev-version/6.4",
         "directus/filesystem": "dev-version/6.4",
+        "directus/hash": "dev-version/6.4",
         "directus/hook": "dev-version/6.4",
         "directus/utils": "dev-version/6.4",
         "guzzlehttp/guzzle": "~5.3.0 | ^6.0.0"

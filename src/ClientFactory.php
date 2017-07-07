@@ -17,6 +17,7 @@ use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Filesystem\Files;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
+use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
 use Directus\Util\ArrayUtils;
 use Directus\Database\TableSchema;
@@ -223,6 +224,10 @@ class ClientFactory
             }
 
             return $settings;
+        });
+
+        $container->singleton('hashManager', function () {
+            return new HashManager();
         });
 
         $container->singleton('files', function() {

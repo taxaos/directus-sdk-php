@@ -135,6 +135,9 @@ abstract class BaseClientRemote extends AbstractClient
     const MESSAGES_GET_ENDPOINT = 'messages/rows/%s';
     const MESSAGES_USER_LIST_ENDPOINT = 'messages/user/%s';
 
+    const UTILS_RANDOM_ENDPOINT = 'random';
+    const UTILS_HASH_ENDPOINT = 'hash';
+
     public function __construct($accessToken, $options = [])
     {
         $this->accessToken = $accessToken;
@@ -151,7 +154,7 @@ abstract class BaseClientRemote extends AbstractClient
             $this->baseEndpoint = $this->baseUrl . '/api';
         }
 
-        $this->apiVersion = isset($options['version']) ? $options['version'] : 1;
+        $this->apiVersion = isset($options['version']) ? $options['version'] : $this->getDefaultAPIVersion();
         $this->baseEndpoint .= '/' . $this->getAPIVersion() . '/';
 
         $this->setHTTPClient($this->getDefaultHTTPClient());
@@ -185,6 +188,16 @@ abstract class BaseClientRemote extends AbstractClient
     public function getAPIVersion()
     {
         return $this->apiVersion;
+    }
+
+    /**
+     * Gets the default API version
+     *
+     * @return string
+     */
+    public function getDefaultAPIVersion()
+    {
+        return '1.1';
     }
 
     /**
