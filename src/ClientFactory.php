@@ -200,7 +200,7 @@ class ClientFactory
         TableSchema::setSchemaManagerInstance($schema);
         TableSchema::setAclInstance($acl);
         TableSchema::setConnectionInstance($connection);
-        TableSchema::setConfig($config);
+        TableSchema::setConfig(new Config($config));
 
         $container->singleton('emitter', function() {
             return $this->getEmitter();
