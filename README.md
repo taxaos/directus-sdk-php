@@ -48,16 +48,16 @@ The result will look like this:
 
 ```json
 {
-	"require": {
-		"directus/sdk": "0.1.*"
-	},
+  "require": {
+    "directus/sdk": "0.1.*"
+  },
   "minimum-stability": "dev",
   "repositories": [
     {
       "type": "git",
       "url": "https://github.com/wellingguzman/zend-db"
     }
-	]
+  ]
 }
 ```
 
