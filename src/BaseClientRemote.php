@@ -326,7 +326,7 @@ abstract class BaseClientRemote extends AbstractClient
         $query = ArrayUtils::get($params, 'query', null);
         $options = [];
 
-        if (in_array($method, ['POST', 'PUT']) && $body) {
+        if (in_array($method, ['POST', 'PUT', 'PATCH']) && $body) {
             $options['body'] = $body;
         }
 
