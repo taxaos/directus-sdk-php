@@ -432,4 +432,23 @@ interface RequestsInterface
      * @return Entry
      */
     public function getActivity(array $params = []);
+
+    /**
+     * Gets a random alphanumeric string
+     *
+     * @param array $options
+     *
+     * @return Entry
+     */
+    public function getRandom(array $options = []);
+
+    /**
+     * Gets a hashed value from the given string
+     *
+     * @param string $string
+     * @param array $options
+     *
+     * @return Entry
+     */
+    public function getHash($string, array $options = []);
 }

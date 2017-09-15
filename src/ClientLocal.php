@@ -23,6 +23,7 @@ use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
+use Directus\Util\StringUtils;
 use Zend\Db\Sql\Predicate\In;
 
 /**
@@ -684,6 +685,48 @@ class ClientLocal extends AbstractClient
         $tableGateway = new DirectusActivityTableGateway($connection, $acl);
 
         $data = $tableGateway->fetchFeed($params);
+
+        return $this->createResponseFromData($data);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRandom(array $options = [])
+    {
+        $length = (int) ArrayUtils::get($options, 'length', 32);
+
+        return $this->createResponseFromData([
+            'success' => true,
+            'data' => [
+                'random' => StringUtils::randomString($length)
+            ]
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHash($string, array $options = [])
+    {
+        $hashManager = $this->container->get('hashManager');
+
+        try {
+            $hash = $hashManager->hash($string, $options);
+            $data = [
+                'success' => true,
+                'data' => [
+                    'hash' => $hash
+                ]
+            ];
+        } catch (\Exception $e) {
+            $data = [
+                'success' => false,
+                'error' => [
+                    'message' => $e->getMessage()
+                ]
+            ];
+        }
 
         return $this->createResponseFromData($data);
     }

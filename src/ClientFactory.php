@@ -10,12 +10,14 @@
 
 namespace Directus\SDK;
 
+use Directus\Config\Config;
 use Directus\Database\Connection;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Filesystem\Files;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
+use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
 use Directus\Util\ArrayUtils;
 use Directus\Database\TableSchema;
@@ -54,7 +56,9 @@ class ClientFactory
     protected $defaultConfig = [
         'environment' => 'development',
         'database' => [
-            'driver' => 'pdo_mysql'
+            'driver'  => 'pdo_mysql',
+            'charset' => 'utf8mb4',
+            'port'    => 3306
         ],
         'status' => [
             'column_name' => 'active',
@@ -134,7 +138,7 @@ class ClientFactory
         $this->container = $container = new Container();
 
         $options = ArrayUtils::defaults($this->defaultConfig, $options);
-        $container->set('config', $options);
+        $container->set('config', new Config($options));
 
         $dbConfig = ArrayUtils::get($options, 'database', []);
 
@@ -166,6 +170,7 @@ class ClientFactory
         $connection = new Connection($dbConfig);
         $connection->connect();
         $container->set('connection', $connection);
+        $container->set('zendDb', $connection);
 
         $acl = new \Directus\Permissions\Acl();
         $acl->setUserId(1);
@@ -195,12 +200,12 @@ class ClientFactory
         TableSchema::setSchemaManagerInstance($schema);
         TableSchema::setAclInstance($acl);
         TableSchema::setConnectionInstance($connection);
-        TableSchema::setConfig($config);
+        TableSchema::setConfig(new Config($config));
 
         $container->singleton('emitter', function() {
             return $this->getEmitter();
         });
-        $container->set('settings', function(Container $container) {
+        $container->set('files_settings', function(Container $container) {
             $adapter = $container->get('connection');
             $acl = $container->get('acl');
             $Settings = new DirectusSettingsTableGateway($adapter, $acl);
@@ -209,6 +214,22 @@ class ClientFactory
                 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
             ]);
         });
+        $container->set('app.settings', function (Container $container) {
+            $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', $container->get('zendDb'));
+            $rowSet = $DirectusSettingsTableGateway->select();
+
+            $settings = [];
+            foreach ($rowSet as $setting) {
+                $settings[$setting['collection']][$setting['name']] = $setting['value'];
+            }
+
+            return $settings;
+        });
+
+        $container->singleton('hashManager', function () {
+            return new HashManager();
+        });
+
         $container->singleton('files', function() {
             return $this->getFiles();
         });
@@ -227,9 +248,9 @@ class ClientFactory
         static $files = null;
         if ($files == null) {
             $config = $this->container->get('config');
-            $filesystemConfig = ArrayUtils::get($config, 'filesystem', []);
+            $filesystemConfig = $config->get('filesystem', []);
             $filesystem = new Filesystem(FilesystemFactory::createAdapter($filesystemConfig));
-            $settings = $this->container->get('settings');
+            $settings = $this->container->get('files_settings');
             $emitter = $this->container->get('emitter');
             $files = new Files($filesystem, $filesystemConfig, $settings, $emitter);
         }
@@ -264,41 +285,24 @@ class ClientFactory
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($payload) {
-            // $tableName, $data
-            if (func_num_args() == 2) {
-                $tableName = func_get_arg(0);
-                $data = func_get_arg(1);
-            } else {
-                $tableName = $payload->tableName;
-                $data = $payload->data;
-            }
+        $emitter->addFilter('table.insert.directus_files:before', function ($payload) {
+            unset($payload['data']);
+            $payload['user'] = 1;
 
-            if ($tableName == 'directus_files') {
-                unset($data['data']);
-                $data['user'] = 1;
-            }
-
-            return func_num_args() == 2 ? $data : $payload;
+            return $payload;
         });
 
         // Add file url and thumb url
         $config = $this->container->get('config');
         $files = $this->container->get('files');
-        $emitter->addFilter('table.select', function($payload) use ($config, $files) {
-            if (func_num_args() == 2) {
-                $result = func_get_arg(0);
-                $selectState = func_get_arg(1);
-            } else {
-                $selectState = $payload->selectState;
-                $result = $payload->result;
-            }
+        $emitter->addFilter('table.select', function ($payload) use ($config, $files) {
+            $selectState = $payload->attribute('selectState');
 
             if ($selectState['table'] == 'directus_files') {
-                $fileRows = $result->toArray();
-                foreach ($fileRows as &$row) {
-                    $fileURL = ArrayUtils::get($config, 'filesystem.root_url', '');
-                    $thumbnailURL = ArrayUtils::get($config, 'filesystem.root_thumb_url', '');
+                $rows = $payload->toArray();
+                foreach ($rows as &$row) {
+                    $fileURL = $config->get('filesystem.root_url', '');
+                    $thumbnailURL = $config->get('filesystem.root_thumb_url', '');
                     $thumbnailFilenameParts = explode('.', $row['name']);
                     $thumbnailExtension = array_pop($thumbnailFilenameParts);
 
@@ -322,13 +326,8 @@ class ClientFactory
 
                     // 314551321-vimeo-220-124-true.jpg
                     // hotfix: there's not thumbnail for this file
-                    if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                    }
-
-                    if ($files->exists('thumbs/' . $thumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-                    }
+                    $row['old_thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
 
                     /*
                     $embedManager = Bootstrap::get('embedManager');
@@ -340,11 +339,10 @@ class ClientFactory
                     */
                 }
 
-                $filesArrayObject = new \ArrayObject($fileRows);
-                $result->initialize($filesArrayObject->getIterator());
+                $payload->replace($rows);
             }
 
-            return (func_num_args() == 2) ? $result : $payload;
+            return $payload;
         });
 
         return $emitter;

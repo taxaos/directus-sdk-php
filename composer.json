@@ -5,11 +5,13 @@
     "license": "MIT",
     "require": {
         "php": ">=5.5.0",
-        "directus/database": "0.9.*",
-        "directus/permissions": "0.9.*",
-        "directus/filesystem": "0.9.*",
-        "directus/hook": "0.9.*",
-        "directus/utils": "0.9.*",
+        "directus/config": "dev-version/6.4",
+        "directus/database": "dev-master",
+        "directus/permissions": "dev-version/6.4",
+        "directus/filesystem": "dev-version/6.4",
+        "directus/hash": "dev-version/6.4",
+        "directus/hook": "dev-version/6.4",
+        "directus/utils": "dev-version/6.4",
         "guzzlehttp/guzzle": "~5.3.0 | ^6.0.0"
     },
     "require-dev": {
@@ -26,5 +28,9 @@
             "Directus\\SDK\\": "src/"
         },
         "files": ["src/helpers.php"]
-    }
+    },
+    "repositories": [{
+        "type": "git",
+        "url": "https://github.com/wellingguzman/zend-db"
+    }]
 }

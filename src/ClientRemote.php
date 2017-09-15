@@ -492,4 +492,34 @@ class ClientRemote extends BaseClientRemote
             'query' => $params
         ]);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRandom(array $options = [])
+    {
+        $path = $this->buildPath(static::UTILS_RANDOM_ENDPOINT);
+
+        return $this->performRequest('POST', $path, ['body' => $options]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHash($string, array $options = [])
+    {
+        $path = $this->buildPath(static::UTILS_HASH_ENDPOINT);
+
+        $data = [
+            'string' => $string
+        ];
+
+        if (ArrayUtils::has($options, 'hasher')) {
+            $data['hasher'] = ArrayUtils::pull($options, 'hasher');
+        }
+
+        $data['options'] = $options;
+
+        return $this->performRequest('POST', $path, ['body' => $data]);
+    }
 }
