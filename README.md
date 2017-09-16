@@ -25,7 +25,7 @@ Add `directus/sdk` to composer `require` list.
 ```json
 {
   "require": {
-    "directus/sdk": "0.1.*"
+    "directus/sdk": "^1.0"
   }
 }
 ```
@@ -49,7 +49,7 @@ The result will look like this:
 ```json
 {
   "require": {
-    "directus/sdk": "0.1.*"
+    "directus/sdk": "^1.0"
   },
   "minimum-stability": "dev",
   "repositories": [
