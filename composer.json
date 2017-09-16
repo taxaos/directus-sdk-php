@@ -5,13 +5,13 @@
     "license": "MIT",
     "require": {
         "php": ">=5.5.0",
-        "directus/config": "dev-version/6.4",
-        "directus/database": "dev-master",
-        "directus/permissions": "dev-version/6.4",
-        "directus/filesystem": "dev-version/6.4",
-        "directus/hash": "dev-version/6.4",
-        "directus/hook": "dev-version/6.4",
-        "directus/utils": "dev-version/6.4",
+        "directus/config": "^1.0.0",
+        "directus/database": "^1.0.0",
+        "directus/permissions": "^1.0.0",
+        "directus/filesystem": "^1.0.0",
+        "directus/hash": "^1.0.0",
+        "directus/hook": "^1.0.0",
+        "directus/utils": "^1.0.0",
         "guzzlehttp/guzzle": "~5.3.0 | ^6.0.0"
     },
     "require-dev": {

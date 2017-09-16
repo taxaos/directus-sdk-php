@@ -301,7 +301,13 @@ class ClientLocal extends AbstractClient
             });
         }
 
-        return $tableGateway->update(['active' => 0], new In('id', $ids));
+        if (!$tableGateway->getTableSchema()->hasStatusColumn()) {
+            throw new \Exception('Cannot soft-delete. Table has not status column.');
+        }
+
+        return $tableGateway->update([
+            $tableGateway->getStatusColumnName() => $tableGateway->getDeletedValue()
+        ], new In('id', $ids));
     }
 
     /**

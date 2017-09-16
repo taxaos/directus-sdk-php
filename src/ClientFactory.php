@@ -61,24 +61,42 @@ class ClientFactory
             'port'    => 3306
         ],
         'status' => [
-            'column_name' => 'active',
+            'column_name' => 'status',
             'deleted_value' => 0,
             'active_value' => 1,
             'draft_value' => 2,
             'mapping' => [
                 0 => [
-                    'name' => 'Delete',
-                    'color' => '#C1272D',
+                    'name' => 'Deleted',
+                    'text_color' => '#FFFFFF',
+                    'background_color' => '#F44336',
+                    'subdued_in_listing' => true,
+                    'show_listing_badge' => true,
+                    'hidden_globally' => true,
+                    'hard_delete' => false,
+                    'published' => false,
                     'sort' => 3
                 ],
                 1 => [
-                    'name' => 'Active',
-                    'color' => '#5B5B5B',
+                    'name' => 'Published',
+                    'text_color' => '#FFFFFF',
+                    'background_color' => '#3498DB',
+                    'subdued_in_listing' => false,
+                    'show_listing_badge' => false,
+                    'hidden_globally' => false,
+                    'hard_delete' => false,
+                    'published' => true,
                     'sort' => 1
                 ],
                 2 => [
                     'name' => 'Draft',
-                    'color' => '#BBBBBB',
+                    'text_color' => '#999999',
+                    'background_color' => '#EEEEEE',
+                    'subdued_in_listing' => true,
+                    'show_listing_badge' => true,
+                    'hidden_globally' => false,
+                    'hard_delete' => false,
+                    'published' => false,
                     'sort' => 2
                 ]
             ]
@@ -160,7 +178,7 @@ class ClientFactory
         }
 
         if (!defined('STATUS_COLUMN_NAME')) {
-            define('STATUS_COLUMN_NAME', ArrayUtils::get($config, 'status.column_name', 'active'));
+            define('STATUS_COLUMN_NAME', ArrayUtils::get($config, 'status.column_name', 'status'));
         }
 
         if (!defined('DIRECTUS_ENV')) {

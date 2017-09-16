@@ -221,14 +221,15 @@ class ClientRemote extends BaseClientRemote
     public function deleteItem($tableName, $id, $hard = false)
     {
         $path = $this->buildPath(static::TABLE_ENTRY_DELETE_ENDPOINT, [$tableName, $id]);
+        $options = [];
 
-        if ($hard === true) {
-            return $this->performRequest('DELETE', $path);
+        if ($hard !== true) {
+            $options = [
+                'query' => ['soft' => true]
+            ];
         }
 
-        return $this->performRequest('PATCH', $path, [
-            'body' => ['active' => 0]
-        ]);
+        return $this->performRequest('DELETE', $path, $options);
     }
 
     /**
