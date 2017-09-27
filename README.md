@@ -10,6 +10,8 @@
 
 For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
 
+_Note: You don't need this SDK to run [Directus](https://github.com/directus/directus) itself_
+
 ## Requirements
 
 PHP version 5.4 or greater.
