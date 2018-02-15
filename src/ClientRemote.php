@@ -124,9 +124,9 @@ class ClientRemote extends BaseClientRemote
     /**
      * @inheritdoc
      */
-    public function getFiles()
+    public function getFiles(array $options = [])
     {
-        return $this->performRequest('GET', static::FILE_LIST_ENDPOINT);
+        return $this->performRequest('GET', static::FILE_LIST_ENDPOINT, ['query' => $options]);
     }
 
     /**
