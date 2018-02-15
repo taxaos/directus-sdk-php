@@ -126,9 +126,11 @@ interface RequestsInterface
     /**
      * Gets a list fo files
      *
+     * @param array $params - Parameters
+     *
      * @return EntryCollection
      */
-    public function getFiles();
+    public function getFiles(array $params = []);
 
     /**
      * Gets the information of a given file ID
