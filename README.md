@@ -109,20 +109,34 @@ foreach($articles as $article) {
 
 ## Getting the whole response
 
-The whole response is an object Entry or EntryCollection depends if it's a single item or a collection of items.
+The whole response is an `Entry` or `EntryCollection` object, it depends if it's a single item or a collection of items.
 
 While it can be interact like an array it's not an actual array.
+
+Ex:
+
+```php
+// OK
+$articles = $client->getItems('articles');
+$title = $articles['title'];
+
+// Error
+$articles = $client->getItems('articles');
+$data = array_merge(['title' => 'Default'], $articles);
+```
 
 ### Getting the whole response as an array
 
 ```php
 $articles = $client->getItems('articles');
-$articlesArray = $articles->getRawData();
+$articlesArray = $articles->toArray();
+// Works
+$data = array_merge(['title' => 'Default'], $articlesArray);
 ```
 
 ### Getting the data response
 
-A response include data and metadata, by default interacting with the EntryCollection or Entry you are interacting with the "data" object.
+A response include data and metadata, by default interacting with the `EntryCollection` or `Entry` you are interacting with the "data" object.
 
  ### Getting the data as an array
 
