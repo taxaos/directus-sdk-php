@@ -127,6 +127,14 @@ class Entry implements ResponseInterface, \ArrayAccess
     }
 
     /**
+     * @inheridoc
+     */
+    public function toArray()
+    {
+        return $this-getRawData();
+    }
+
+    /**
      * Gets the object representation of this entry
      *
      * @return object

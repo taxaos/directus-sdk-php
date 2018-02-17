@@ -162,6 +162,14 @@ class EntryCollection implements ResponseInterface, \IteratorAggregate, \ArrayAc
     }
 
     /**
+     * @inheridoc
+     */
+    public function toArray()
+    {
+        return $this-getRawData();
+    }
+
+    /**
      * Gets an object representation of this collection
      *
      * @return object

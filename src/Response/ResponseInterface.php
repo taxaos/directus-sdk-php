@@ -27,7 +27,7 @@ interface ResponseInterface extends \JsonSerializable
     /**
      * Gets the response metadata
      *
-     * @return array
+     * @return ResponseInterface
      */
     public function getMetaData();
 
@@ -37,4 +37,11 @@ interface ResponseInterface extends \JsonSerializable
      * @return array
      */
     public function getRawData();
+
+    /**
+     * Gets the response data as array
+     *
+     * @return array
+     */
+    public function toArray();
 }
