@@ -10,8 +10,6 @@
 
 For PHP driven applications, use this SDK to more easily communicate with your Directus managed database.
 
-_Note: You don't need this SDK to run [Directus](https://github.com/directus/directus) itself_
-
 ## Requirements
 
 PHP version 5.4 or greater.
@@ -20,46 +18,18 @@ PHP version 5.4 or greater.
 
 ### Via Composer
 
-You can install the SDK using [Composer](http://getcomposer.org).
+You can install the SDK using [Composer](http://getcomposer.org) by running the command below:
 
-Add `directus/sdk` to composer `require` list.
+``` bash
+$ composer require directus/sdk
+```
 
+Or add `directus/sdk` to composer `require` list.
 ```json
 {
   "require": {
-    "directus/sdk": "^1.0"
+    "directus/sdk": "0.9.*"
   }
-}
-```
-
-As we are trying to get zend-db to [support spaces and dashes in columns](https://github.com/zendframework/zend-db/issues/208) officially, the SDK require to use a forked zend-db that supports it.
-
-Add these lines into your `composer.json`:
-
-```
-"minimum-stability": "dev",
-"repositories": [
-  {
-    "type": "git",
-    "url": "https://github.com/wellingguzman/zend-db"
-  }
-]
-```
-
-The result will look like this:
-
-```json
-{
-  "require": {
-    "directus/sdk": "^1.0"
-  },
-  "minimum-stability": "dev",
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/wellingguzman/zend-db"
-    }
-  ]
 }
 ```
 
@@ -135,4 +105,44 @@ $articles = $client->getItems('articles');
 foreach($articles as $article) {
     echo $article->title . '<br>';
 }
+```
+
+## Getting the whole response
+
+The whole response is an object Entry or EntryCollection depends if it's a single item or a collection of items.
+
+While it can be interact like an array it's not an actual array.
+
+### Getting the whole response as an array
+
+```php
+$articles = $client->getItems('articles');
+$articlesArray = $articles->getRawData();
+```
+
+### Getting the data response
+
+A response include data and metadata, by default interacting with the EntryCollection or Entry you are interacting with the "data" object.
+
+ ### Getting the data as an array
+
+```php
+$articles = $client->getItems('articles');
+$articlesArray = $articles->getData();
+```
+
+## Metadata
+The metadata is another Entry type object which wrap the metadata information, can interact like an array but it's not an array.
+
+
+### Getting the metadata
+
+```php
+$articles = $client->getItems('articles');
+$metadata = $articles->getMetaData();
+```
+
+```php
+$articles = $client->getItems('articles');
+$metadataArray = $articles->getMetaData()->getData();
 ```
