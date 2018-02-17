@@ -18,16 +18,23 @@ namespace Directus\SDK\Response;
 interface ResponseInterface extends \JsonSerializable
 {
     /**
-     * Get the response data
+     * Gets the response data
      *
      * @return array
      */
     public function getData();
 
     /**
-     * Get the response metadata
+     * Gets the response metadata
      *
      * @return array
      */
     public function getMetaData();
+
+    /**
+     * Gets the response data
+     *
+     * @return array
+     */
+    public function getRawData();
 }
