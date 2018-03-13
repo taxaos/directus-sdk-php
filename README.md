@@ -18,18 +18,16 @@ PHP version 5.4 or greater.
 
 ### Via Composer
 
-You can install the SDK using [Composer](http://getcomposer.org) by running the command below:
-
-``` bash
-$ composer require directus/sdk
-```
-
-Or add `directus/sdk` to composer `require` list.
+You can install the SDK using [Composer](http://getcomposer.org) by adding `directus/sdk` to composer `require` list.
 ```json
 {
   "require": {
     "directus/sdk": "0.9.*"
-  }
+  },
+  "repositories": [{
+    "type": "git",
+    "url": "https://github.com/wellingguzman/zend-db"
+  }]
 }
 ```
 
